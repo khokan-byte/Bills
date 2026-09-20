@@ -1459,4 +1459,43 @@ if (CR && lkGet()) lkShow('unlock');
   diag();
 })();
 </script>
+  <script>
+(function () {
+  Object.assign(I18N.en, {bar_sub: 'Sub-meter {0}', bar_diff: 'Difference {0}'});
+  Object.assign(I18N.bn, {bar_sub: 'সাব-মিটার {0}', bar_diff: 'পার্থক্য {0}'});
+
+  var bolt = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='57,16 30,55 47,55 42,84 70,44 53,44' fill='#F5C542'/></svg>";
+  var css =
+    'header h1{display:flex;align-items:center}' +
+    'header h1::before{content:"";flex:none;width:28px;height:28px;border-radius:8px;border:1px solid var(--bd);margin-right:10px;background:#1a1a1a url("data:image/svg+xml,' + encodeURIComponent(bolt) + '") center/74% no-repeat}' +
+    '.gapbar{margin-top:12px}' +
+    '.gb-track{display:flex;height:10px;border-radius:999px;overflow:hidden;background:var(--sf)}' +
+    '.gb-track i{display:block;height:100%}' +
+    '.gb-l{display:flex;justify-content:space-between;font-size:12px;color:var(--mu);margin-top:6px}';
+  var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+
+  var hp = document.getElementById('hp');
+  var bar = document.createElement('div'); bar.className = 'gapbar'; bar.style.display = 'none';
+  bar.innerHTML = '<div class="gb-track"><i id="gb-s" style="background:#1D9E75"></i><i id="gb-d"></i></div><div class="gb-l"><span id="gb-a"></span><span id="gb-b"></span></div>';
+  hp.parentNode.insertBefore(bar, hp.nextSibling);
+
+  function paintBar() {
+    var asc = sorted();
+    if (asc.length < 2) { bar.style.display = 'none'; return; }
+    var p = pair(asc[0], asc[asc.length - 1]);
+    if (!(p.mu > 0)) { bar.style.display = 'none'; return; }
+    var sp = Math.max(0, Math.min(100, p.su / p.mu * 100)), dp = 100 - sp;
+    var col = dp < 15 ? 'var(--ok)' : dp < 40 ? 'var(--warn)' : 'var(--bad)';
+    $('gb-s').style.width = sp + '%';
+    $('gb-d').style.width = dp + '%';
+    $('gb-d').style.background = col;
+    $('gb-a').textContent = tr('bar_sub', pct(sp));
+    $('gb-b').textContent = tr('bar_diff', pct(dp));
+    bar.style.display = 'block';
+  }
+  var oldDash = dash;
+  dash = function () { oldDash(); paintBar(); };
+  paintBar();
+})();
+  </script>
 </body></html>
