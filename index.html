@@ -4,9 +4,24 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f5f5f3">
 <title>Meter Log</title>
-<script>try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script>
+(function(){
+  var lines=[];
+  window.showErr=function(m){
+    lines.push(m); if(lines.length>3)lines.shift();
+    function draw(){
+      var d=document.getElementById('errbar');
+      if(!d){d=document.createElement('div');d.id='errbar';d.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;background:#b00020;color:#fff;padding:10px 12px;border-radius:10px;font:13px/1.4 monospace;z-index:99;white-space:pre-wrap;word-break:break-word';d.onclick=function(){d.remove();lines=[];};document.body.appendChild(d);}
+      d.textContent=lines.join('\n')+'\n(tap to hide)';
+    }
+    if(document.body)draw();else document.addEventListener('DOMContentLoaded',draw);
+  };
+  window.addEventListener('error',function(e){window.showErr('Error: '+e.message+(e.lineno?' (line '+e.lineno+')':''));});
+  window.addEventListener('unhandledrejection',function(e){window.showErr('Error: '+((e.reason&&e.reason.message)||e.reason));});
+})();
+try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t)}catch(e){}
+</script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/idb-keyval@6/dist/umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <style>
   :root{color-scheme:light;--bg:#f5f5f3;--card:#fff;--bd:#e2e2de;--tx:#1a1a1a;--mu:#6b6b66;--in:#fff;--btn:#1a1a1a;--btnt:#fff;--sf:#f1f1ee;--err:#b00020;--ac:#378ADD;--ok:#0f7b5a;--warn:#9a5b00;--bad:#b3261e;--okb:#e3f4ed;--warnb:#fdf0dc;--badb:#fbe7e5}
@@ -73,7 +88,7 @@
   #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(16px);background:var(--btn);color:var(--btnt);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:10}
   #toast.show{opacity:1;transform:translateX(-50%)}
   @media print{
-    .noprint,header,#toast{display:none!important}
+    .noprint,header,#toast,#errbar{display:none!important}
     body{background:#fff;color:#000}
     body.pr>*:not(#sec-report){display:none!important}
     body.pr #sec-report{border:none;padding:0;margin:0}
@@ -218,9 +233,11 @@
     <button id="csv" class="alt">Export CSV</button>
     <button id="backup" class="alt">Backup file</button>
     <button id="restoreBtn" class="alt">Restore backup</button>
-    <button id="install" style="display:none">Install app</button>
+    <button id="refresh" class="alt">Refresh app files</button>
   </div>
+  <button id="install" style="display:none">Install app</button>
   <small style="margin-top:10px">To install: in Chrome, open the menu (⋮) and choose Install app or Add to Home screen.</small>
+  <small id="diag" style="margin-top:8px"></small>
   <input id="restore" type="file" accept="application/json" style="display:none">
 </div>
 
@@ -229,6 +246,50 @@
 <script>
 const $ = id => document.getElementById(id);
 const UNIT = 'unit/kWh';
+const VERSION = 'v4';
+
+const store = (function () {
+  let dbp = null, mode = 'idb', warned = false;
+  const mem = {};
+  function open() {
+    if (dbp) return dbp;
+    dbp = new Promise((res, rej) => {
+      try {
+        const r = indexedDB.open('keyval-store', 1);
+        r.onupgradeneeded = () => { if (!r.result.objectStoreNames.contains('keyval')) r.result.createObjectStore('keyval'); };
+        r.onsuccess = () => res(r.result);
+        r.onerror = () => rej(r.error);
+        r.onblocked = () => rej(new Error('storage blocked'));
+      } catch (e) { rej(e); }
+    });
+    return dbp;
+  }
+  function fail(e) {
+    mode = 'mem';
+    if (!warned) { warned = true; window.showErr('This browser is not letting the app save (' + (e && e.name || e) + '). Readings will be lost when you close the page. Open the link in Chrome, and make a Backup file now and then.'); }
+  }
+  async function get(k) {
+    if (mode === 'idb') {
+      try {
+        const db = await open();
+        return await new Promise((res, rej) => { const q = db.transaction('keyval').objectStore('keyval').get(k); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); });
+      } catch (e) { fail(e); }
+    }
+    return mem[k];
+  }
+  async function set(k, v) {
+    if (mode === 'idb') {
+      try {
+        const db = await open();
+        await new Promise((res, rej) => { const tx = db.transaction('keyval', 'readwrite'); tx.objectStore('keyval').put(v, k); tx.oncomplete = res; tx.onerror = () => rej(tx.error); tx.onabort = () => rej(tx.error); });
+        return;
+      } catch (e) { fail(e); }
+    }
+    mem[k] = v;
+  }
+  return {get, set, mode: () => mode};
+})();
+
 let checks = [], bills = [], settings = {load: 1, rent: 0, vat: 5};
 let files = {main: null, sub: null}, worker = null, urls = [], bUrls = [], rUrls = [], showAll = false, chart = null, chartMode = 'cum', pending = [], toastTimer = null, deferredInstall = null;
 
@@ -237,16 +298,21 @@ function toast(m) {
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
+function diag() {
+  $('diag').textContent = VERSION + ' · ' + (store.mode() === 'idb' ? 'storage OK' : 'storage NOT saving') + ' · ' + (typeof Chart !== 'undefined' ? 'graph OK' : 'graph library missing') + ' · ' + (typeof Tesseract !== 'undefined' ? 'photo reading OK' : 'photo reading library missing');
+}
+
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
   const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
-  document.querySelector('meta[name=theme-color]').setAttribute('content', bg);
+  const m = document.querySelector('meta[name=theme-color]');
+  if (m) m.setAttribute('content', bg);
   if (chart) summary();
 }
 const mq = window.matchMedia('(prefers-color-scheme: dark)');
 const savedTheme = () => { try { return localStorage.getItem('theme'); } catch (e) { return null; } };
 applyTheme(savedTheme() || (mq.matches ? 'dark' : 'light'));
-mq.addEventListener('change', e => { if (!savedTheme()) applyTheme(e.matches ? 'dark' : 'light'); });
+if (mq.addEventListener) mq.addEventListener('change', e => { if (!savedTheme()) applyTheme(e.matches ? 'dark' : 'light'); });
 $('theme').onclick = () => {
   const n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   try { localStorage.setItem('theme', n); } catch (e) {}
@@ -281,7 +347,7 @@ function makeIcon(size) {
     document.head.appendChild(l);
     const ic = document.createElement('link'); ic.rel = 'icon'; ic.href = i192; document.head.appendChild(ic);
   } catch (e) {}
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  try { if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {}); } catch (e) {}
 })();
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; $('install').style.display = 'block'; });
 window.addEventListener('appinstalled', () => { $('install').style.display = 'none'; toast('App installed'); });
@@ -289,6 +355,13 @@ $('install').onclick = async () => {
   if (!deferredInstall) return;
   deferredInstall.prompt(); await deferredInstall.userChoice;
   deferredInstall = null; $('install').style.display = 'none';
+};
+$('refresh').onclick = async () => {
+  try {
+    if (window.caches) { const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); }
+    if (navigator.serviceWorker) { const rs = await navigator.serviceWorker.getRegistrations(); await Promise.all(rs.map(r => r.unregister())); }
+  } catch (e) {}
+  toast('Reloading…'); setTimeout(() => location.reload(), 500);
 };
 
 const DEMAND = 42;
@@ -321,9 +394,9 @@ const when = t => new Date(t).toLocaleString(undefined, {day:'numeric', month:'s
 const short = t => new Date(t).toLocaleString(undefined, {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 const sorted = () => [...checks].sort((a, b) => a.ts - b.ts);
-const persist = () => idbKeyval.set('checks', checks);
-const persistBills = () => idbKeyval.set('bills', bills);
-const persistSettings = () => idbKeyval.set('settings', settings);
+const persist = () => store.set('checks', checks);
+const persistBills = () => store.set('bills', bills);
+const persistSettings = () => store.set('settings', settings);
 const noPhoto = v => ({kwh: v, photo: null, hash: null, photoTime: null});
 function dl(blob, name) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); }
 function pair(a, b) { const mu = b.main.kwh - a.main.kwh, su = b.sub.kwh - a.sub.kwh; return {mu, su, gap: mu - su, days: (b.ts - a.ts) / 864e5}; }
@@ -357,4 +430,428 @@ function daily(rows) {
 async function sha256(f) {
   try {
     const h = await crypto.subtle.digest('SHA-256', await f.arrayBuffer());
-    return [...new Uint8Array(
+    return [...new Uint8Array(h)].map(b => b.toString(16).padStart(2, '0')).join('');
+  } catch (e) { return 'n/a'; }
+}
+async function prep(f) {
+  try {
+    const bmp = await createImageBitmap(f);
+    const sc = Math.min(1, 1400 / Math.max(bmp.width, bmp.height));
+    const c = document.createElement('canvas');
+    c.width = Math.round(bmp.width * sc); c.height = Math.round(bmp.height * sc);
+    const x = c.getContext('2d');
+    x.filter = 'grayscale(1) contrast(1.4)';
+    x.drawImage(bmp, 0, 0, c.width, c.height);
+    return c;
+  } catch (e) { return f; }
+}
+async function ocr(f) {
+  if (typeof Tesseract === 'undefined') throw new Error('no ocr');
+  if (!worker) {
+    worker = await Tesseract.createWorker('eng');
+    await worker.setParameters({tessedit_char_whitelist: '0123456789.'});
+  }
+  const {data} = await worker.recognize(await prep(f));
+  const m = data.text.match(/\d{3,}(\.\d)?/);
+  return m ? m[0] : '';
+}
+
+['main', 'sub'].forEach(k => {
+  $('p-' + k).onchange = async e => {
+    const f = e.target.files[0];
+    files[k] = f || null;
+    if (!f) { $('v-' + k).style.display = 'none'; return; }
+    $('v-' + k).src = URL.createObjectURL(f);
+    $('v-' + k).style.display = 'block';
+    $('err').textContent = '';
+    $('s-' + k).textContent = 'Reading digits…';
+    try {
+      const r = await ocr(f);
+      if (r) { $('r-' + k).value = r; $('s-' + k).textContent = 'Auto-read done. Check against the photo.'; }
+      else $('s-' + k).textContent = 'No digits found. Type the reading.';
+    } catch (x) { $('s-' + k).textContent = 'Auto-read failed. Type the reading.'; }
+  };
+  $('r-' + k).oninput = () => { $('err').textContent = ''; };
+});
+
+$('save').onclick = async () => {
+  const m = parseFloat($('r-main').value), s = parseFloat($('r-sub').value);
+  if (isNaN(m) || isNaN(s)) { $('err').textContent = 'Enter both the main and the sub-meter reading'; return; }
+  const last = sorted().pop();
+  if (last && (m < last.main.kwh || s < last.sub.kwh) && !confirm('A reading is lower than the last saved pair. Save anyway?')) return;
+  const mk = async (f, v) => f ? {kwh: v, photo: f, hash: await sha256(f), photoTime: f.lastModified} : noPhoto(v);
+  checks.push({id: Date.now(), ts: Date.now(), note: $('note').value.trim(), main: await mk(files.main, m), sub: await mk(files.sub, s)});
+  await persist();
+  ['main', 'sub'].forEach(k => { $('r-' + k).value = ''; $('p-' + k).value = ''; $('v-' + k).style.display = 'none'; $('s-' + k).textContent = 'With a photo, the digits are read for you. Always check them.'; files[k] = null; });
+  $('note').value = '';
+  render();
+  $('to').value = sorted().pop().id; summary(); diag();
+  toast('Reading pair saved');
+};
+
+function parseNotes(text) {
+  const rows = [], skipped = []; let d = null;
+  text.split(/\r?\n/).forEach(line => {
+    const t = line.trim(); if (!t) return;
+    const m = t.match(/^(?:(\d{1,2})\.+(\d{1,2})\.+(\d{2,4})[\s_]*)?(\d{1,2})[.:](\d{2})\s*(am|pm)?\.?\s*(.*)$/i);
+    if (!m) { skipped.push(t + ' (not understood)'); return; }
+    if (m[1]) d = [+m[1], +m[2], m[3].length === 2 ? 2000 + +m[3] : +m[3]];
+    if (!d) { skipped.push(t + ' (no date yet)'); return; }
+    let h = +m[4]; const ap = (m[6] || '').toLowerCase();
+    if (ap === 'am' && h === 12) h = 0;
+    if (ap === 'pm' && h < 12) h += 12;
+    const nums = (m[7].match(/\d+(?:\.\d+)?/g) || []).map(Number);
+    if (nums.length < 2) { skipped.push(t + ' (needs main and sub)'); return; }
+    const [mm, ss] = nums.slice(-2);
+    rows.push({ts: new Date(d[2], d[1] - 1, d[0], h, +m[5]).getTime(), m: mm, s: ss});
+  });
+  return {rows, skipped};
+}
+
+$('parse').onclick = () => {
+  const {rows, skipped} = parseNotes($('paste').value);
+  const fresh = rows.filter(r => !checks.some(c => Math.abs(c.ts - r.ts) < 60000));
+  const dup = rows.length - fresh.length;
+  const all = [...checks.map(c => ({ts: c.ts, m: c.main.kwh, s: c.sub.kwh})), ...fresh].sort((a, b) => a.ts - b.ts);
+  const warn = [];
+  for (let i = 1; i < all.length; i++) if (all[i].m < all[i-1].m || all[i].s < all[i-1].s) warn.push(short(all[i].ts) + ' is lower than the reading before it');
+  pending = fresh;
+  let t = `${fresh.length} new pairs found` + (dup ? `, ${dup} already in the log` : '') + (skipped.length ? `, ${skipped.length} skipped` : '');
+  if (skipped.length) t += '\nSkipped:\n' + skipped.join('\n');
+  if (warn.length) t += '\nCheck these dates and digits:\n' + warn.join('\n');
+  $('pv').textContent = t; $('pv').style.display = 'block';
+  $('commit').style.display = fresh.length ? 'block' : 'none';
+};
+$('commit').onclick = async () => {
+  const n = pending.length;
+  checks = checks.concat(toChecks(pending));
+  await persist();
+  pending = []; $('paste').value = ''; $('pv').style.display = 'none'; $('commit').style.display = 'none';
+  render();
+  const asc = sorted(); $('from').value = asc[0].id; $('to').value = asc[asc.length - 1].id; summary(); diag();
+  toast(n + ' readings added');
+};
+
+function drawChart(rows) {
+  if (typeof Chart === 'undefined') { $('chartnote').textContent = 'The graph needs an internet connection to load once.'; return; }
+  const cs = getComputedStyle(document.documentElement);
+  const mu = cs.getPropertyValue('--mu').trim(), grid = cs.getPropertyValue('--bd').trim();
+  const axis = t => ({title: {display: true, text: t, color: mu}, ticks: {color: mu}, grid: {color: grid}});
+  if (chart) { chart.destroy(); chart = null; }
+  $('chartnote').textContent = '';
+  if (chartMode === 'cum') {
+    const t0 = rows[0].ts;
+    const mp = rows.map(r => ({x: (r.ts - t0) / 864e5, y: r.main.kwh - rows[0].main.kwh}));
+    const sp = rows.map(r => ({x: (r.ts - t0) / 864e5, y: r.sub.kwh - rows[0].sub.kwh}));
+    chart = new Chart($('chart'), {type: 'scatter',
+      data: {datasets: [
+        {data: mp, showLine: true, borderColor: '#378ADD', backgroundColor: '#378ADD', pointRadius: 2, borderWidth: 2},
+        {data: sp, showLine: true, borderColor: '#1D9E75', backgroundColor: '#1D9E75', pointRadius: 2, borderWidth: 2}
+      ]},
+      options: {responsive: true, maintainAspectRatio: false, animation: false, plugins: {legend: {display: false}}, scales: {x: axis('Days'), y: axis('Unit/kWh used since start')}}});
+  } else {
+    const d = daily(rows);
+    if (!d.length) $('chartnote').textContent = 'Per-day view needs at least one full calendar day in the range.';
+    chart = new Chart($('chart'), {type: 'bar',
+      data: {labels: d.map(x => x.label), datasets: [
+        {data: d.map(x => Math.round(x.m * 10) / 10), backgroundColor: '#378ADD'},
+        {data: d.map(x => Math.round(x.s * 10) / 10), backgroundColor: '#1D9E75'}
+      ]},
+      options: {responsive: true, maintainAspectRatio: false, animation: false, plugins: {legend: {display: false}},
+        scales: {x: {ticks: {color: mu, maxRotation: 0, autoSkip: true}, grid: {display: false}}, y: axis('Unit/kWh per day')}}});
+  }
+}
+$('m-cum').onclick = () => { chartMode = 'cum'; $('m-cum').classList.add('on'); $('m-day').classList.remove('on'); summary(); };
+$('m-day').onclick = () => { chartMode = 'day'; $('m-day').classList.add('on'); $('m-cum').classList.remove('on'); summary(); };
+
+function dash() {
+  const asc = sorted();
+  if (!asc.length) { $('due').textContent = 'No readings'; $('due').className = 'pill'; $('hl').textContent = ''; }
+  else {
+    const last = asc[asc.length - 1], h = (Date.now() - last.ts) / 36e5;
+    $('hl').textContent = 'Last reading: ' + when(last.ts) + ' (' + ago(h) + ')';
+    $('due').textContent = h > 26 ? 'Reading due' : 'Up to date';
+    $('due').className = 'pill ' + (h > 26 ? 'warn' : 'ok');
+  }
+  if (asc.length < 2) { $('hd').textContent = '-'; $('hp').textContent = 'Save or import at least two readings to see the meter difference.'; $('dm').textContent = '-'; $('ds').textContent = '-'; return; }
+  const p = pair(asc[0], asc[asc.length - 1]);
+  $('hd').innerHTML = fmt(p.gap) + '<span class="u"> ' + UNIT + '</span>';
+  $('hp').textContent = (p.mu > 0 ? Math.round(p.gap / p.mu * 100) + '% of main meter units' : '-') + ' · ' + p.days.toFixed(1) + ' days since ' + short(asc[0].ts);
+  met('dm', p.mu); met('ds', p.su);
+}
+
+function summary() {
+  const asc = sorted();
+  const ia = asc.findIndex(k => String(k.id) === $('from').value), ib = asc.findIndex(k => String(k.id) === $('to').value);
+  const lo = Math.min(ia, ib), hi = Math.max(ia, ib);
+  if (lo < 0 || lo === hi) {
+    ['cm', 'cs', 'cg', 'cp'].forEach(i => { $(i).textContent = '-'; });
+    $('detail').textContent = 'Save or import at least two readings, then pick two different ones.';
+    $('impact').style.display = 'none';
+    if (chart) { chart.destroy(); chart = null; }
+    return;
+  }
+  const p = pair(asc[lo], asc[hi]), rate = parseFloat($('rate').value);
+  met('cm', p.mu); met('cs', p.su); met('cg', p.gap);
+  $('cp').textContent = p.mu > 0 ? Math.round(p.gap / p.mu * 100) + '%' : '-';
+  let t = p.days.toFixed(1) + ' days';
+  if (p.days > 0) t += ` · Main ${fmt(p.mu / p.days)} unit/day, Sub ${fmt(p.su / p.days)} unit/day`;
+  if (!isNaN(rate)) t += ` · meter difference of about ${fmt(p.gap * rate)} at ${rate} per ${UNIT}`;
+  $('detail').textContent = t;
+
+  const tf = TARIFFS[0];
+  if (p.days > 0 && p.mu > 0) {
+    const mm = p.mu / p.days * 30, ss = p.su / p.days * 30;
+    const bm = bill(mm, tf).total, bs = bill(ss, tf).total;
+    $('impact').textContent = `Projected to 30 days, ${tf.name}\nBill on main meter units: ${fmt(mm)} ${UNIT} = ${tk(bm)}\nBill on sub-meter units: ${fmt(ss)} ${UNIT} = ${tk(bs)}\nBill difference: about ${tk(bm - bs)} a month`;
+    $('impact').style.display = 'block';
+  } else $('impact').style.display = 'none';
+  drawChart(asc.slice(lo, hi + 1));
+}
+['from', 'to', 'rate'].forEach(id => $(id).addEventListener('input', summary));
+
+function render() {
+  urls.forEach(u => URL.revokeObjectURL(u)); urls = [];
+  const url = b => { const x = URL.createObjectURL(b); urls.push(x); return x; };
+  const asc = sorted();
+
+  const html = [];
+  for (let i = asc.length - 1; i >= 0; i--) {
+    const k = asc[i], p = i ? pair(asc[i - 1], k) : null;
+    let th = '';
+    if (k.main.photo || k.sub.photo) {
+      th = '<div class="th">';
+      if (k.main.photo) { const a = url(k.main.photo); th += `<a href="${a}" target="_blank"><img src="${a}" alt="Main meter"></a>`; }
+      if (k.sub.photo) { const b = url(k.sub.photo); th += `<a href="${b}" target="_blank"><img src="${b}" alt="Sub-meter"></a>`; }
+      th += '</div>';
+    }
+    const pc = p && p.mu > 0 ? Math.round(p.gap / p.mu * 100) : null;
+    const cls = pc === null ? '' : pc < 15 ? 'ok' : pc < 40 ? 'warn' : 'bad';
+    const pill = `<span class="pill ${cls}">${pc === null ? (p ? '-' : 'first') : pc + '% diff'}</span>`;
+    const hasH = k.main.hash && k.sub.hash;
+    html.push(`<div class="rec"><div class="head"><b>${when(k.ts)}</b>${pill}</div>
+      <div>Main <b>${k.main.kwh}</b>${p ? ' <small style="display:inline">+' + fmt(p.mu) + '</small>' : ''} · Sub <b>${k.sub.kwh}</b>${p ? ' <small style="display:inline">+' + fmt(p.su) + '</small>' : ''}</div>
+      ${p ? '<small>Meter difference since previous: ' + fmt(p.gap) + ' ' + UNIT + '</small>' : ''}
+      ${th}
+      <small>${k.note ? esc(k.note) + ' · ' : ''}${hasH ? 'SHA-256 ' + k.main.hash.slice(0, 8) + ' / ' + k.sub.hash.slice(0, 8) : (k.main.photo || k.sub.photo ? 'partly photographed' : 'no photo')}</small>
+      <button class="alt sm noprint" data-id="${k.id}">Delete</button></div>`);
+  }
+  $('list').innerHTML = html.length ? (showAll ? html : html.slice(0, 6)).join('') : '<div class="empty">No readings yet. Save a pair or import your notes.</div>';
+  $('more').textContent = showAll ? 'Show latest 6' : 'Show all ' + html.length + ' readings';
+  $('more').style.display = html.length > 6 ? 'block' : 'none';
+
+  const kf = $('from').value, kt = $('to').value;
+  const opts = asc.map(k => `<option value="${k.id}">${short(k.ts)}</option>`).join('');
+  $('from').innerHTML = opts; $('to').innerHTML = opts;
+  if (asc.length) {
+    $('from').value = asc.find(k => String(k.id) === kf) ? kf : asc[0].id;
+    $('to').value = asc.find(k => String(k.id) === kt) ? kt : asc[asc.length - 1].id;
+  }
+  dash(); summary(); renderBills(); fillMonths(); renderReport();
+}
+
+function renderBills() {
+  bUrls.forEach(u => URL.revokeObjectURL(u)); bUrls = [];
+  const asc = sorted();
+  let ratio = null;
+  if (asc.length >= 2) { const p = pair(asc[0], asc[asc.length - 1]); if (p.mu > 0) ratio = p.su / p.mu; }
+  let paid = 0, over = 0, n = 0;
+  const B = $('bills'); B.innerHTML = '';
+  [...bills].sort((a, b) => a.month.localeCompare(b.month)).forEach(x => {
+    const tf = tariffFor(x.month);
+    if (x.amount != null) paid += x.amount;
+    let sm = '';
+    if (!tf) sm = 'The tariff before March 2024 is not built in, so there is no taka estimate.';
+    else {
+      const off = bill(x.units, tf).total;
+      sm = 'Official bill for these units: ' + tk(off);
+      if (x.amount != null) { const d = x.amount - off; sm += ' (you paid ' + (d >= 0 ? '+' : '-') + tk(Math.abs(d)) + ' vs official)'; }
+      if (ratio !== null) {
+        const au = x.units * ratio, ao = bill(au, tf).total, base = x.amount != null ? x.amount : off, o = base - ao;
+        sm += '\nAt the measured share (' + Math.round(ratio * 100) + '% of main): ' + fmt(au) + ' ' + UNIT + ' = ' + tk(ao) + '\nEstimated extra charge: about ' + tk(o);
+        over += o; n++;
+      }
+    }
+    let link = '';
+    if (x.photo) { const u = URL.createObjectURL(x.photo); bUrls.push(u); link = ' · <a href="' + u + '" target="_blank">bill photo</a>'; }
+    const d = document.createElement('div'); d.className = 'rec';
+    d.innerHTML = '<div class="head"><span><b>' + esc(x.month) + '</b> · ' + fmt(x.units) + ' ' + UNIT + (x.amount != null ? ' · paid ' + tk(x.amount) : '') + link + '</span><button class="alt sm noprint" data-bid="' + x.id + '">Remove</button></div><small style="white-space:pre-line">' + sm + '</small>';
+    B.appendChild(d);
+  });
+  if (!bills.length) { $('best').textContent = 'Add past bills to see what they should have been.'; return; }
+  let txt = bills.length + ' bills' + (paid ? ', ' + tk(paid) + ' paid' : '');
+  if (n) txt += '\nEstimated extra charge across ' + n + ' bills: about ' + tk(over) + '\nRough estimate. It assumes the same main-to-sub share applied in every month.';
+  else if (ratio === null) txt += '\nSave at least two reading pairs to get an estimate.';
+  $('best').textContent = txt;
+}
+$('bills').onclick = async e => {
+  const b = e.target.closest('button[data-bid]');
+  if (!b || !confirm('Remove this bill?')) return;
+  bills = bills.filter(x => x.id !== +b.dataset.bid);
+  await persistBills(); renderBills(); renderReport(); toast('Bill removed');
+};
+$('addbill').onclick = async () => {
+  const month = $('b-month').value.trim(), units = parseFloat($('b-units').value), amt = parseFloat($('b-amt').value);
+  if (!/^\d{4}-\d{2}$/.test(month) || isNaN(units)) { $('b-err').textContent = 'Enter the month (like 2026-08) and the billed unit/kWh'; return; }
+  bills.push({id: Date.now(), month, units, amount: isNaN(amt) ? null : amt, photo: $('b-photo').files[0] || null});
+  await persistBills();
+  ['b-month', 'b-units', 'b-amt', 'b-photo'].forEach(i => { $(i).value = ''; });
+  $('b-err').textContent = '';
+  renderBills(); renderReport(); toast('Bill added');
+};
+['b-month', 'b-units'].forEach(id => $(id).addEventListener('input', () => { $('b-err').textContent = ''; }));
+
+function updateSetSummary() { $('setsum').textContent = 'Bill settings · ' + settings.load + ' kW · ' + tk(settings.rent) + ' rent · ' + settings.vat + '% VAT'; }
+function loadSettingsInputs() { $('set-load').value = settings.load; $('set-rent').value = settings.rent; $('set-vat').value = settings.vat; updateSetSummary(); }
+['load', 'rent', 'vat'].forEach(k => {
+  $('set-' + k).addEventListener('input', async () => {
+    const v = parseFloat($('set-' + k).value);
+    settings[k] = isNaN(v) ? 0 : v;
+    updateSetSummary();
+    await persistSettings(); summary(); renderBills(); renderReport();
+  });
+});
+
+const monthName = m => { const [y, mo] = m.split('-'); return new Date(+y, +mo - 1, 1).toLocaleDateString(undefined, {month: 'long', year: 'numeric'}); };
+function fillMonths() {
+  const s = new Set(checks.map(k => { const d = new Date(k.ts); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); }));
+  const ms = [...s].sort(), keep = $('rm').value;
+  $('rm').innerHTML = ms.map(m => `<option value="${m}">${monthName(m)}</option>`).join('');
+  if (ms.length) $('rm').value = ms.includes(keep) ? keep : ms[ms.length - 1];
+}
+function reportData(m) {
+  const asc = sorted(); if (asc.length < 2) return null;
+  const [y, mo] = m.split('-').map(Number);
+  const ms = new Date(y, mo - 1, 1).getTime(), me = new Date(y, mo, 1).getTime();
+  const a = Math.max(ms, asc[0].ts), b = Math.min(me, asc[asc.length - 1].ts);
+  if (b <= a) return null;
+  const mu = cumAt(asc, 'main', b) - cumAt(asc, 'main', a), su = cumAt(asc, 'sub', b) - cumAt(asc, 'sub', a);
+  return {a, b, mu, su, gap: mu - su, days: (b - a) / 864e5, rows: asc.filter(k => k.ts >= ms && k.ts < me), asc};
+}
+function reportText(m, d) {
+  const pc = d.mu > 0 ? Math.round(d.gap / d.mu * 100) : null;
+  let txt = `Meter Difference Report - ${monthName(m)}\nPeriod: ${short(d.a)} to ${short(d.b)} (${d.days.toFixed(1)} days)\nMain meter used: ${fmt(d.mu)} ${UNIT}\nSub-meter used: ${fmt(d.su)} ${UNIT}\nMeter difference: ${fmt(d.gap)} ${UNIT}` + (pc !== null ? ` (${pc}% of main)` : '');
+  const tf = tariffFor(m);
+  if (tf && d.mu > 0 && d.days > 0) {
+    const bm = bill(d.mu / d.days * 30, tf).total, bs = bill(d.su / d.days * 30, tf).total;
+    txt += `\nProjected 30-day bill on main units: ${tk(bm)}\nProjected 30-day bill on sub-meter units: ${tk(bs)}\nBill difference: about ${tk(bm - bs)}`;
+  }
+  return txt;
+}
+function renderReport() {
+  rUrls.forEach(u => URL.revokeObjectURL(u)); rUrls = [];
+  const m = $('rm').value, R = $('report');
+  if (!m) { R.innerHTML = '<div class="empty">No readings yet.</div>'; return; }
+  const d = reportData(m);
+  if (!d) { R.innerHTML = '<div class="empty">Not enough readings to cover ' + monthName(m) + '.</div>'; return; }
+  const pc = d.mu > 0 ? Math.round(d.gap / d.mu * 100) : null, tf = tariffFor(m);
+  let h = `<div style="font-size:18px;font-weight:700;margin-top:12px">Meter Difference Report</div>
+    <div class="muted">${monthName(m)} · ${short(d.a)} to ${short(d.b)} (${d.days.toFixed(1)} days)</div>
+    <table class="rt">
+      <tr><td>Main meter used</td><td><b>${fmt(d.mu)}</b> ${UNIT}</td></tr>
+      <tr><td>Sub-meter used</td><td><b>${fmt(d.su)}</b> ${UNIT}</td></tr>
+      <tr><td>Meter difference (main − sub)</td><td><b>${fmt(d.gap)}</b> ${UNIT}${pc !== null ? ' (' + pc + '% of main)' : ''}</td></tr>
+      <tr><td>Average per day</td><td>Main ${fmt(d.mu / d.days)} · Sub ${fmt(d.su / d.days)} unit/day</td></tr>`;
+  if (tf && d.mu > 0) {
+    const bm = bill(d.mu / d.days * 30, tf).total, bs = bill(d.su / d.days * 30, tf).total;
+    h += `<tr><td>Projected 30-day bill, main units</td><td>${tk(bm)}</td></tr>
+      <tr><td>Projected 30-day bill, sub-meter units</td><td>${tk(bs)}</td></tr>
+      <tr><td>Bill difference</td><td><b>about ${tk(bm - bs)}</b></td></tr>`;
+  }
+  h += '</table>';
+  const mb = bills.filter(b => b.month === m);
+  if (mb.length) h += '<div style="margin-top:12px;font-weight:600">Bills recorded</div>' + mb.map(b => '<div class="muted">' + fmt(b.units) + ' ' + UNIT + ' billed' + (b.amount != null ? ', paid ' + tk(b.amount) : '') + '</div>').join('');
+  const idx = new Map(d.asc.map((k, i) => [k.id, i]));
+  h += '<div style="margin-top:12px;font-weight:600">Readings</div><table class="rt"><tr><th>When</th><th>Main</th><th>Sub</th><th>+Main</th><th>+Sub</th><th>Diff</th></tr>';
+  d.rows.forEach(k => {
+    const i = idx.get(k.id), p = i ? pair(d.asc[i - 1], k) : null;
+    h += `<tr><td>${short(k.ts)}</td><td>${k.main.kwh}</td><td>${k.sub.kwh}</td><td>${p ? '+' + fmt(p.mu) : '-'}</td><td>${p ? '+' + fmt(p.su) : '-'}</td><td>${p && p.mu > 0 ? Math.round(p.gap / p.mu * 100) + '%' : '-'}</td></tr>`;
+  });
+  h += '</table>';
+  const ph = d.rows.filter(k => k.main.photo || k.sub.photo);
+  if (ph.length) {
+    h += '<div style="margin-top:12px;font-weight:600">Photos</div>';
+    ph.forEach(k => {
+      h += `<div class="muted" style="margin-top:8px">${short(k.ts)}</div><div class="th">`;
+      if (k.main.photo) { const u = URL.createObjectURL(k.main.photo); rUrls.push(u); h += `<img src="${u}" alt="Main meter">`; }
+      if (k.sub.photo) { const u = URL.createObjectURL(k.sub.photo); rUrls.push(u); h += `<img src="${u}" alt="Sub-meter">`; }
+      h += '</div>';
+    });
+  }
+  h += `<small style="margin-top:12px">Generated ${when(Date.now())} by Meter Log. Readings without a photo were entered by hand.</small>`;
+  R.innerHTML = h;
+}
+$('rm').addEventListener('input', renderReport);
+$('rprint').onclick = () => { document.body.classList.add('pr'); window.print(); };
+window.addEventListener('afterprint', () => document.body.classList.remove('pr'));
+$('rshare').onclick = async () => {
+  const m = $('rm').value, d = m && reportData(m);
+  if (!d) { toast('Nothing to share yet'); return; }
+  const text = reportText(m, d);
+  try {
+    if (navigator.share) { await navigator.share({title: 'Meter Difference Report - ' + monthName(m), text}); return; }
+    await navigator.clipboard.writeText(text); toast('Summary copied');
+  } catch (e) {}
+};
+
+$('list').onclick = async e => {
+  const b = e.target.closest('button[data-id]');
+  if (!b || !confirm('Delete this reading pair?')) return;
+  checks = checks.filter(k => k.id !== +b.dataset.id);
+  await persist(); render(); toast('Reading pair deleted');
+};
+$('more').onclick = () => { showAll = !showAll; render(); };
+
+$('csv').onclick = () => {
+  const q = s => '"' + String(s || '').replace(/"/g, '""') + '"';
+  const iso = t => t ? new Date(t).toISOString() : '';
+  const rows = ['type,when,main_unit_kwh,sub_unit_kwh,main_used,sub_used,meter_difference,billed_unit_kwh,amount_paid,note,main_photo_time,sub_photo_time,main_sha256,sub_sha256'];
+  const asc = sorted();
+  asc.forEach((k, i) => {
+    const p = i ? pair(asc[i - 1], k) : null;
+    rows.push(['reading', new Date(k.ts).toISOString(), k.main.kwh, k.sub.kwh, p ? p.mu : '', p ? p.su : '', p ? p.gap : '', '', '', q(k.note), iso(k.main.photoTime), iso(k.sub.photoTime), k.main.hash || '', k.sub.hash || ''].join(','));
+  });
+  bills.forEach(x => rows.push(['bill', x.month, '', '', '', '', '', x.units, x.amount == null ? '' : x.amount, '', '', '', '', ''].join(',')));
+  dl(new Blob([rows.join('\n')], {type: 'text/csv'}), 'meter-log.csv');
+  toast('CSV exported');
+};
+
+const b64 = f => new Promise(r => { const x = new FileReader(); x.onload = () => r(x.result); x.readAsDataURL(f); });
+const unb64 = async u => (await fetch(u)).blob();
+const encM = async x => ({...x, photo: x.photo ? await b64(x.photo) : null});
+const decM = async x => ({...x, photo: x.photo ? await unb64(x.photo) : null});
+
+$('backup').onclick = async () => {
+  toast('Preparing backup…');
+  const c = [], b = [];
+  for (const k of checks) c.push({...k, main: await encM(k.main), sub: await encM(k.sub)});
+  for (const x of bills) b.push(await encM(x));
+  dl(new Blob([JSON.stringify({checks: c, bills: b, settings})], {type: 'application/json'}), 'meter-backup.json');
+  toast('Backup file created');
+};
+$('restoreBtn').onclick = () => $('restore').click();
+$('restore').onchange = async e => {
+  const f = e.target.files[0];
+  if (!f || !confirm('Restore replaces the readings and bills on this phone. Continue?')) return;
+  const d = JSON.parse(await f.text());
+  checks = []; bills = [];
+  for (const k of d.checks || []) checks.push({...k, main: await decM(k.main), sub: await decM(k.sub)});
+  for (const x of d.bills || []) bills.push(await decM(x));
+  if (d.settings) settings = Object.assign(settings, d.settings);
+  await persist(); await persistBills(); await persistSettings();
+  loadSettingsInputs(); render(); toast('Backup restored');
+};
+
+(async () => {
+  try {
+    checks = (await store.get('checks')) || [];
+    bills = (await store.get('bills')) || [];
+    settings = Object.assign({load: 1, rent: 0, vat: 5}, (await store.get('settings')) || {});
+  } catch (e) { window.showErr('Could not load saved data: ' + e.message); }
+  loadSettingsInputs();
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+  try { render(); } catch (e) { window.showErr('Display problem: ' + e.message); }
+  diag();
+})();
+</script>
+</body></html>
