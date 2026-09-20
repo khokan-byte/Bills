@@ -341,4 +341,1122 @@ en: {
   ocr_done: 'Read {0}. Check it against the photo.',
   c_title: 'Compare', c_from: 'From', c_to: 'To', c_rate: 'Rate per unit/kWh (optional, flat)', c_rate_ph: 'e.g. 9.5',
   c_main: 'Main used', c_sub: 'Sub used', c_md: 'Meter difference (main − sub)', c_mdp: 'Meter difference (% of main)',
-  c_days: '{0} days', c_perday: ' · Main {0} unit/day, 
+  c_days: '{0} days', c_perday: ' · Main {0} unit/day, Sub {1} unit/day',
+  c_ratenote: ' · meter difference of about {0} at {1} per unit/kWh',
+  c_pick: 'Save or import at least two readings, then pick two different ones.',
+  c_impact: 'Projected to 30 days, {0}\nBill on main meter units: {1} = {2}\nBill on sub-meter units: {3} = {4}\nBill difference: about {5} a month',
+  tf_jun: 'June 2026 tariff', tf_feb: 'Feb 2024 tariff',
+  c_cum: 'Cumulative', c_day: 'Per day', c_legend: 'Blue = Main, green = Sub (unit/kWh)',
+  c_ax_days: 'Days', c_ax_cum: 'Unit/kWh used since start', c_ax_day: 'Unit/kWh per day',
+  c_nochart: 'The graph needs an internet connection to load once.',
+  c_nodays: 'Per-day view needs at least one full calendar day in the range.',
+  b_title: 'Bills', b_sub: 'Uses the BERC residential (LT-A) tariff from the June 2026 billing cycle.',
+  b_settings: 'Bill settings · {0} kW · {1} rent · {2}% VAT',
+  b_load: 'Sanctioned load (kW)', b_rent: 'Meter rent (৳/month)', b_vat: 'VAT (%)',
+  b_setnote: 'Set these from your real bill so the totals match.',
+  b_month: 'Bill month (like 2026-08)', b_units: 'Billed unit/kWh', b_amt: 'Amount paid (৳, optional)', b_photo: 'Photo of bill (optional)',
+  b_err: 'Enter the month (like 2026-08) and the billed unit/kWh', b_add: 'Add bill', b_added: 'Bill added',
+  b_removed: 'Bill removed', b_confirm: 'Remove this bill?', b_remove: 'Remove',
+  b_old: 'The tariff before March 2024 is not built in, so there is no taka estimate.',
+  b_off: 'Official bill for these units: {0}', b_paidvs: ' (you paid {0}{1} vs official)',
+  b_share: '\nAt the measured share ({0} of main): {1} = {2}\nEstimated extra charge: about {3}',
+  b_paid: 'paid {0}', b_photolink: 'bill photo',
+  b_empty: 'Add past bills to see what they should have been.',
+  b_count: '{0} bills', b_paidtot: ', {0} paid',
+  b_over: '\nEstimated extra charge across {0} bills: about {1}\nRough estimate. It assumes the same main-to-sub share applied in every month.',
+  b_need2: '\nSave at least two reading pairs to get an estimate.',
+  b_rates_t: 'Rates used',
+  b_rates: 'Per unit/kWh: up to 50 unit/kWh all at ৳4.63 (lifeline). Otherwise 0-75 ৳5.26, 76-200 ৳8.50, 201-300 ৳9.10, 301-400 ৳9.62, 401-600 ৳15.01, above 600 ৳17.35. Demand charge ৳42 per kW. VAT applied on energy + demand + meter rent. Bills from Mar 2024 to May 2026 use the older slabs (76-200 ৳7.20, 201-300 ৳7.59, 301-400 ৳8.02, 401-600 ৳12.67, above 600 ৳14.61). Check berc.org.bd for changes.',
+  bc_title: 'Bill check',
+  bc_hint: 'Type the numbers printed on your bill. The app works out each line itself and compares.',
+  bc_month: 'Bill month (like 2026-06)', bc_prev: 'Previous reading (Previous RDG)', bc_pres: 'Present reading (Present RDG)',
+  bc_omf: 'OMF (multiplier)', bc_units: 'Consumed unit', bc_load: 'Sanctioned load (S.LOAD, kW)',
+  bc_elec: 'Electricity charge on the bill', bc_dem: 'Demand charge on the bill',
+  bc_other: 'Minimum, service charge and meter rent (if any)', bc_vat: 'VAT on the bill',
+  bc_adj: 'Adjustments / arrears (net, use - for a deduction)', bc_pay: 'Amount to be paid on the bill',
+  bc_photo: 'Photo of bill (optional)', bc_save: 'Save to bills',
+  bc_calc: 'How the app calculated it', bc_line: 'Line', bc_yours: 'Your bill', bc_app: 'App',
+  bc_l_elec: 'Electricity charge', bc_l_dem: 'Demand charge ({0} kW × ৳{1})', bc_l_other: 'Other charges',
+  bc_l_vat: 'VAT ({0}%, rounded to whole taka)', bc_l_total: 'Bill month total', bc_l_adj: 'Adjustments / arrears', bc_l_pay: 'Amount to be paid',
+  bc_ok: 'All lines match your bill.',
+  bc_bad: '{0} line(s) do not match. Check the meter multiplier (OMF), sanctioned load, bill month and readings.',
+  bc_paisa: 'Differences under ৳1 are normal because the paisa part is carried to the next bill.',
+  bc_units_word: 'unit', bc_need: 'Enter the bill month and the consumed units (or both readings).', bc_saved: 'Saved to bills',
+  h_title: 'Reading history', h_empty: 'No readings yet. Save a pair or import your notes.',
+  h_main: 'Main', h_sub: 'Sub', h_md: 'Meter difference since previous: {0}', h_first: 'first', h_diff: '{0} diff',
+  h_part: 'partly photographed', h_nophoto: 'no photo', h_delete: 'Delete', h_confirm: 'Delete this reading pair?',
+  h_deleted: 'Reading pair deleted', h_all: 'Show all {0} readings', h_latest: 'Show latest 6',
+  r_title: 'Monthly report', r_month: 'Month', r_head: 'Meter Difference Report',
+  r_period: '{0} · {1} to {2} ({3} days)', r_ofmain: ' ({0} of main)', r_avg: 'Average per day',
+  r_avgv: 'Main {0} · Sub {1} unit/day', r_pm: 'Projected 30-day bill, main units', r_ps: 'Projected 30-day bill, sub-meter units',
+  r_bd: 'Bill difference', r_about: 'about {0}', r_bills: 'Bills recorded', r_billed: '{0} billed', r_paidc: ', paid {0}',
+  r_reads: 'Readings', th_when: 'When', th_main: 'Main', th_sub: 'Sub', th_pm: '+Main', th_ps: '+Sub', th_diff: 'Diff',
+  r_photos: 'Photos', r_foot: 'Generated {0} by Meter Log. Readings without a photo were entered by hand.',
+  r_none: 'No readings yet.', r_notenough: 'Not enough readings to cover {0}.',
+  r_print: 'Print / save PDF', r_share: 'Share summary', r_nothing: 'Nothing to share yet', r_copied: 'Summary copied',
+  r_sharetitle: 'Meter Difference Report - {0}',
+  r_text: 'Meter Difference Report - {0}\nPeriod: {1} to {2} ({3} days)\nMain meter used: {4}\nSub-meter used: {5}\nMeter difference: {6}{7}',
+  r_text_bill: '\nProjected 30-day bill on main units: {0}\nProjected 30-day bill on sub-meter units: {1}\nBill difference: about {2}',
+  i_title: 'Import from notes',
+  i_hint: 'Paste lines like: 29.8.26 8.28am 15738-2974 (date, time, main, sub). A line with only a time uses the date above it.',
+  i_ph: 'Paste your notes here', i_check: 'Check lines', i_found: '{0} new pairs found',
+  i_dup: ', {0} already in the log', i_skip: ', {0} skipped', i_skipped: '\nSkipped:\n', i_warn: '\nCheck these dates and digits:\n',
+  i_low: '{0} is lower than the reading before it', i_s1: '(not understood)', i_s2: '(no date yet)', i_s3: '(needs main and sub)',
+  i_add: 'Add to log', i_added: '{0} readings added',
+  lk_title: 'App lock', lk_off: 'Lock is off. Set a PIN so nobody else can open your readings on this phone.',
+  lk_on: 'Lock is on. The app locks when you leave it for about 2 minutes.',
+  lk_set: 'Set PIN', lk_change: 'Change PIN', lk_remove: 'Turn off lock', lk_now: 'Lock now',
+  lk_new: 'Choose a PIN (4 to 8 digits)', lk_again: 'Type the same PIN again', lk_cur: 'Enter your current PIN',
+  lk_enter: 'Enter PIN', lk_unlock: 'Unlock', lk_wrong: 'Wrong PIN', lk_wait: 'Too many tries. Wait {0} seconds.',
+  lk_mismatch: 'The two PINs do not match', lk_short: 'Use 4 to 8 digits', lk_saved: 'PIN saved', lk_removed: 'Lock turned off',
+  lk_forgot: 'Forgot the PIN? There is no reset because nothing is stored online. Clearing the site data in Chrome removes the lock and also your readings, so restore from your Backup file.',
+  lk_nocrypto: 'The lock needs a secure (https) connection.', lk_ok: 'OK', lk_cancel: 'Cancel',
+  lk_note: 'This keeps casual users out of the app. It is not encryption.',
+  x_title: 'Data', x_csv: 'Export CSV', x_backup: 'Backup file', x_restore: 'Restore backup', x_refresh: 'Refresh app files',
+  x_install: 'Install app', x_hint: 'To install: in Chrome, open the menu (⋮) and choose Install app or Add to Home screen.',
+  x_csvdone: 'CSV exported', x_prep: 'Preparing backup…', x_backdone: 'Backup file created', x_restdone: 'Backup restored',
+  x_restconf: 'Restore replaces the readings and bills on this phone. Continue?', x_installed: 'App installed', x_reload: 'Reloading…',
+  x_d_ok: 'storage OK', x_d_bad: 'storage NOT saving', x_d_graph: 'graph OK', x_d_nograph: 'graph library missing',
+  x_d_ocr: 'photo reading OK', x_d_noocr: 'photo reading library missing',
+  e_store: 'This browser is not letting the app save ({0}). Readings will be lost when you close the page. Open the link in Chrome, and make a Backup file now and then.'
+},
+bn: {
+  app: 'মিটার লগ', tag: 'মূল মিটার ও সাব-মিটার একসাথে রিডিং নিন। ডেটা এই ফোনেই থাকে।',
+  aria_theme: 'ডার্ক বা লাইট মোড বদলান', aria_lang: 'ভাষা বদলান', unit: 'ইউনিট/kWh',
+  n_home: 'হোম', n_add: 'রিডিং', n_compare: 'তুলনা', n_bills: 'বিল', n_hist: 'ইতিহাস', n_report: 'রিপোর্ট', n_data: 'ডেটা',
+  d_title: 'মিটারের পার্থক্য · সব রিডিং', d_main: 'মূল মিটারে ব্যবহার', d_sub: 'সাব-মিটারে ব্যবহার',
+  d_note: 'মিটারের পার্থক্য = একই সময়ে মূল মিটারের ইউনিট − সাব-মিটারের ইউনিট।',
+  d_none: 'কোনো রিডিং নেই', d_due: 'রিডিং নেওয়ার সময় হয়েছে', d_ok: 'হালনাগাদ', d_last: 'শেষ রিডিং: {0} ({1})',
+  ago_now: 'এইমাত্র', ago_h: '{0} ঘণ্টা আগে', ago_d: '{0} দিন আগে',
+  d_need2: 'মিটারের পার্থক্য দেখতে অন্তত দুটি রিডিং সংরক্ষণ বা ইমপোর্ট করুন।',
+  d_hero: 'মূল মিটারের {0} · {2} থেকে {1} দিন',
+  a_title: 'নতুন রিডিং', a_hint: 'ছবি ঐচ্ছিক, তবে ছবি থাকলে রিডিং প্রমাণ হিসেবে অনেক শক্তিশালী হয়।',
+  a_main: 'মূল মিটার', a_sub: 'সাব-মিটার', a_photo: 'ছবি (ঐচ্ছিক)', a_reading: 'রিডিং (ইউনিট/kWh)',
+  a_ocr_hint: 'ছবি দিলে অঙ্কগুলো নিজে থেকে পড়া হবে। সবসময় মিলিয়ে নিন।',
+  a_ocr_run: 'অঙ্ক পড়া হচ্ছে…', a_ocr_ok: 'পড়া হয়েছে। ছবির সাথে মিলিয়ে নিন।',
+  a_ocr_none: 'কোনো অঙ্ক পাওয়া যায়নি। রিডিং নিজে লিখুন।', a_ocr_fail: 'নিজে থেকে পড়া যায়নি। রিডিং নিজে লিখুন।',
+  a_note: 'নোট (ঐচ্ছিক)', a_note_ph: 'যেমন: শুধু 1000 W হিটার চালু',
+  a_err: 'মূল মিটার ও সাব-মিটার, দুটি রিডিংই দিন', a_save: 'রিডিং সংরক্ষণ করুন',
+  a_lower: 'একটি রিডিং আগের সংরক্ষিত রিডিংয়ের চেয়ে কম। তবুও সংরক্ষণ করবেন?', a_saved: 'রিডিং সংরক্ষিত হয়েছে',
+  ocr_title: 'ডিসপ্লের অঙ্কগুলো বেছে নিন',
+  ocr_help: 'শুধু রিডিংয়ের অঙ্কগুলোর চারপাশে টেনে একটি বক্স আঁকুন। পরের বার অ্যাপ এই বক্সটি মনে রাখবে।',
+  ocr_read: 'অঙ্ক পড়ুন', ocr_full: 'পুরো ছবি ব্যবহার করুন', ocr_cancel: 'বাতিল', ocr_adjust: 'জায়গা ঠিক করুন',
+  ocr_other: 'আরও যে সংখ্যা পাওয়া গেছে, সঠিকটিতে ট্যাপ করুন:',
+  ocr_lower: 'এটি আগের রিডিংয়ের ({0}) চেয়ে কম। অঙ্কগুলো মিলিয়ে নিন।',
+  ocr_done: '{0} পড়া হয়েছে। ছবির সাথে মিলিয়ে নিন।',
+  c_title: 'তুলনা', c_from: 'শুরু', c_to: 'শেষ', c_rate: 'প্রতি ইউনিট/kWh রেট (ঐচ্ছিক, একই রেট)', c_rate_ph: 'যেমন 9.5',
+  c_main: 'মূল মিটারে ব্যবহার', c_sub: 'সাব-মিটারে ব্যবহার', c_md: 'মিটারের পার্থক্য (মূল − সাব)', c_mdp: 'মিটারের পার্থক্য (মূলের %)',
+  c_days: '{0} দিন', c_perday: ' · মূল {0} ইউনিট/দিন, সাব {1} ইউনিট/দিন',
+  c_ratenote: ' · প্রতি ইউনিট/kWh {1} টাকা হারে মিটারের পার্থক্য প্রায় {0}',
+  c_pick: 'অন্তত দুটি রিডিং সংরক্ষণ বা ইমপোর্ট করুন, তারপর দুটি আলাদা রিডিং বেছে নিন।',
+  c_impact: '৩০ দিনের হিসাবে, {0}\nমূল মিটারের ইউনিটে বিল: {1} = {2}\nসাব-মিটারের ইউনিটে বিল: {3} = {4}\nবিলের পার্থক্য: মাসে প্রায় {5}',
+  tf_jun: 'জুন ২০২৬ ট্যারিফ', tf_feb: 'ফেব্রুয়ারি ২০২৪ ট্যারিফ',
+  c_cum: 'ক্রমযোজিত', c_day: 'প্রতিদিন', c_legend: 'নীল = মূল, সবুজ = সাব (ইউনিট/kWh)',
+  c_ax_days: 'দিন', c_ax_cum: 'শুরু থেকে ব্যবহৃত ইউনিট/kWh', c_ax_day: 'প্রতিদিন ইউনিট/kWh',
+  c_nochart: 'গ্রাফ দেখাতে একবার ইন্টারনেট সংযোগ লাগবে।',
+  c_nodays: 'প্রতিদিনের ভিউয়ের জন্য নির্বাচিত সময়ে অন্তত একটি পূর্ণ দিন লাগবে।',
+  b_title: 'বিল', b_sub: 'জুন ২০২৬ বিলিং সাইকেল থেকে কার্যকর বিইআরসি আবাসিক (এলটি-এ) ট্যারিফ ব্যবহার করা হয়েছে।',
+  b_settings: 'বিলের সেটিংস · {0} কিলোওয়াট · ভাড়া {1} · ভ্যাট {2}%',
+  b_load: 'অনুমোদিত লোড (কিলোওয়াট)', b_rent: 'মিটার ভাড়া (৳/মাস)', b_vat: 'ভ্যাট (%)',
+  b_setnote: 'আসল বিল দেখে এগুলো দিন, তাহলে মোট টাকা মিলবে।',
+  b_month: 'বিলের মাস (যেমন 2026-08)', b_units: 'বিলে ইউনিট/kWh', b_amt: 'পরিশোধিত টাকা (৳, ঐচ্ছিক)', b_photo: 'বিলের ছবি (ঐচ্ছিক)',
+  b_err: 'মাস (যেমন 2026-08) ও বিলের ইউনিট/kWh দিন', b_add: 'বিল যোগ করুন', b_added: 'বিল যোগ হয়েছে',
+  b_removed: 'বিল সরানো হয়েছে', b_confirm: 'এই বিল সরাবেন?', b_remove: 'সরান',
+  b_old: 'মার্চ ২০২৪-এর আগের ট্যারিফ অ্যাপে নেই, তাই টাকার হিসাব দেওয়া যাচ্ছে না।',
+  b_off: 'এই ইউনিটের সরকারি হারে বিল: {0}', b_paidvs: ' (সরকারি হিসাবের সাথে আপনার পরিশোধের ব্যবধান: {0}{1})',
+  b_share: '\nমাপা অনুপাতে (মূলের {0}): {1} = {2}\nআনুমানিক বাড়তি চার্জ: প্রায় {3}',
+  b_paid: 'পরিশোধ {0}', b_photolink: 'বিলের ছবি',
+  b_empty: 'পুরনো বিল যোগ করলে দেখা যাবে সেগুলো কত হওয়া উচিত ছিল।',
+  b_count: '{0}টি বিল', b_paidtot: ', মোট পরিশোধ {0}',
+  b_over: '\n{0}টি বিলে আনুমানিক বাড়তি চার্জ: প্রায় {1}\nএটি মোটামুটি হিসাব। ধরা হয়েছে প্রতি মাসে মূল ও সাব-মিটারের অনুপাত একই ছিল।',
+  b_need2: '\nহিসাবের জন্য অন্তত দুটি রিডিং সংরক্ষণ করুন।',
+  b_rates_t: 'ব্যবহৃত রেট',
+  b_rates: 'প্রতি ইউনিট/kWh: ৫০ ইউনিট/kWh পর্যন্ত সবই ৳৪.৬৩ (লাইফলাইন)। এর বেশি হলে ০-৭৫ ৳৫.২৬, ৭৬-২০০ ৳৮.৫০, ২০১-৩০০ ৳৯.১০, ৩০১-৪০০ ৳৯.৬২, ৪০১-৬০০ ৳১৫.০১, ৬০০-এর বেশি ৳১৭.৩৫। ডিমান্ড চার্জ প্রতি কিলোওয়াটে ৳৪২। ভ্যাট ধরা হয়েছে এনার্জি + ডিমান্ড + মিটার ভাড়ার ওপর। মার্চ ২০২৪ থেকে মে ২০২৬-এর বিলে পুরনো রেট ধরা হয়েছে (৭৬-২০০ ৳৭.২০, ২০১-৩০০ ৳৭.৫৯, ৩০১-৪০০ ৳৮.০২, ৪০১-৬০০ ৳১২.৬৭, ৬০০-এর বেশি ৳১৪.৬১)। পরিবর্তন হয়েছে কিনা berc.org.bd-তে দেখুন।',
+  bc_title: 'বিল যাচাই',
+  bc_hint: 'আপনার ছাপানো বিলের সংখ্যাগুলো লিখুন। অ্যাপ প্রতিটি লাইন নিজে হিসাব করে মিলিয়ে দেখাবে।',
+  bc_month: 'বিলের মাস (যেমন 2026-06)', bc_prev: 'পূর্বের রিডিং (Previous RDG)', bc_pres: 'বর্তমান রিডিং (Present RDG)',
+  bc_omf: 'OMF (গুণক)', bc_units: 'ব্যবহৃত ইউনিট (Consumed unit)', bc_load: 'অনুমোদিত লোড (S.LOAD, কিলোওয়াট)',
+  bc_elec: 'বিলে ইলেকট্রিসিটি চার্জ', bc_dem: 'বিলে ডিমান্ড চার্জ',
+  bc_other: 'মিনিমাম, সার্ভিস চার্জ ও মিটার ভাড়া (থাকলে)', bc_vat: 'বিলে ভ্যাট',
+  bc_adj: 'সমন্বয়/বকেয়া (মোট, বাদ গেলে - দিন)', bc_pay: 'বিলে প্রদেয় টাকা (Amount to be paid)',
+  bc_photo: 'বিলের ছবি (ঐচ্ছিক)', bc_save: 'বিলের তালিকায় সংরক্ষণ করুন',
+  bc_calc: 'অ্যাপ কীভাবে হিসাব করেছে', bc_line: 'লাইন', bc_yours: 'আপনার বিল', bc_app: 'অ্যাপ',
+  bc_l_elec: 'ইলেকট্রিসিটি চার্জ', bc_l_dem: 'ডিমান্ড চার্জ ({0} কিলোওয়াট × ৳{1})', bc_l_other: 'অন্যান্য চার্জ',
+  bc_l_vat: 'ভ্যাট ({0}%, পূর্ণ টাকায় রাউন্ড)', bc_l_total: 'মাসের বিল মোট', bc_l_adj: 'সমন্বয়/বকেয়া', bc_l_pay: 'প্রদেয় টাকা',
+  bc_ok: 'সব লাইন আপনার বিলের সাথে মিলেছে।',
+  bc_bad: '{0}টি লাইন মেলেনি। মিটার গুণক (OMF), অনুমোদিত লোড, বিলের মাস ও রিডিং আবার দেখুন।',
+  bc_paisa: 'পয়সার অংশ পরের বিলে যায়, তাই ১ টাকার কম ব্যবধান স্বাভাবিক।',
+  bc_units_word: 'ইউনিট', bc_need: 'বিলের মাস এবং ব্যবহৃত ইউনিট (বা দুটি রিডিং) দিন।', bc_saved: 'বিলের তালিকায় সংরক্ষিত হয়েছে',
+  h_title: 'রিডিংয়ের ইতিহাস', h_empty: 'এখনো কোনো রিডিং নেই। রিডিং সংরক্ষণ করুন বা নোট ইমপোর্ট করুন।',
+  h_main: 'মূল', h_sub: 'সাব', h_md: 'আগের রিডিং থেকে মিটারের পার্থক্য: {0}', h_first: 'প্রথম', h_diff: '{0} পার্থক্য',
+  h_part: 'আংশিক ছবি আছে', h_nophoto: 'ছবি নেই', h_delete: 'মুছুন', h_confirm: 'এই রিডিং মুছবেন?',
+  h_deleted: 'রিডিং মুছে ফেলা হয়েছে', h_all: 'সব {0}টি রিডিং দেখুন', h_latest: 'সাম্প্রতিক ৬টি দেখুন',
+  r_title: 'মাসিক রিপোর্ট', r_month: 'মাস', r_head: 'মিটার পার্থক্য রিপোর্ট',
+  r_period: '{0} · {1} থেকে {2} ({3} দিন)', r_ofmain: ' (মূলের {0})', r_avg: 'দৈনিক গড়',
+  r_avgv: 'মূল {0} · সাব {1} ইউনিট/দিন', r_pm: 'আনুমানিক ৩০ দিনের বিল, মূল মিটারের ইউনিটে', r_ps: 'আনুমানিক ৩০ দিনের বিল, সাব-মিটারের ইউনিটে',
+  r_bd: 'বিলের পার্থক্য', r_about: 'প্রায় {0}', r_bills: 'রেকর্ড করা বিল', r_billed: 'বিলে {0}', r_paidc: ', পরিশোধ {0}',
+  r_reads: 'রিডিং', th_when: 'সময়', th_main: 'মূল', th_sub: 'সাব', th_pm: '+মূল', th_ps: '+সাব', th_diff: 'পার্থক্য',
+  r_photos: 'ছবি', r_foot: 'মিটার লগ থেকে {0}-এ তৈরি। ছবি ছাড়া রিডিংগুলো হাতে লেখা।',
+  r_none: 'এখনো কোনো রিডিং নেই।', r_notenough: '{0}-এর জন্য যথেষ্ট রিডিং নেই।',
+  r_print: 'প্রিন্ট / পিডিএফ সেভ', r_share: 'সারসংক্ষেপ শেয়ার করুন', r_nothing: 'শেয়ার করার মতো কিছু নেই', r_copied: 'সারসংক্ষেপ কপি হয়েছে',
+  r_sharetitle: 'মিটার পার্থক্য রিপোর্ট - {0}',
+  r_text: 'মিটার পার্থক্য রিপোর্ট - {0}\nসময়: {1} থেকে {2} ({3} দিন)\nমূল মিটারে ব্যবহার: {4}\nসাব-মিটারে ব্যবহার: {5}\nমিটারের পার্থক্য: {6}{7}',
+  r_text_bill: '\nআনুমানিক ৩০ দিনের বিল (মূল মিটারের ইউনিটে): {0}\nআনুমানিক ৩০ দিনের বিল (সাব-মিটারের ইউনিটে): {1}\nবিলের পার্থক্য: প্রায় {2}',
+  i_title: 'নোট থেকে ইমপোর্ট',
+  i_hint: 'এভাবে লাইন পেস্ট করুন: 29.8.26 8.28am 15738-2974 (তারিখ, সময়, মূল, সাব)। শুধু সময় থাকলে ওপরের লাইনের তারিখ ধরা হবে। বাংলা সংখ্যাও চলবে।',
+  i_ph: 'এখানে আপনার নোট পেস্ট করুন', i_check: 'লাইন যাচাই করুন', i_found: '{0}টি নতুন জোড়া পাওয়া গেছে',
+  i_dup: ', {0}টি আগে থেকেই আছে', i_skip: ', {0}টি বাদ', i_skipped: '\nবাদ পড়েছে:\n', i_warn: '\nএই তারিখ ও অঙ্কগুলো দেখুন:\n',
+  i_low: '{0}: আগের রিডিংয়ের চেয়ে কম', i_s1: '(বোঝা যায়নি)', i_s2: '(আগে কোনো তারিখ নেই)', i_s3: '(মূল ও সাব দুটোই লাগবে)',
+  i_add: 'লগে যোগ করুন', i_added: '{0}টি রিডিং যোগ হয়েছে',
+  lk_title: 'অ্যাপ লক', lk_off: 'লক বন্ধ আছে। পিন দিন, যাতে এই ফোনে অন্য কেউ আপনার রিডিং খুলতে না পারে।',
+  lk_on: 'লক চালু আছে। অ্যাপ থেকে প্রায় ২ মিনিট বাইরে থাকলে নিজে থেকে লক হয়ে যাবে।',
+  lk_set: 'পিন সেট করুন', lk_change: 'পিন বদলান', lk_remove: 'লক বন্ধ করুন', lk_now: 'এখনই লক করুন',
+  lk_new: 'একটি পিন বেছে নিন (৪ থেকে ৮ অঙ্ক)', lk_again: 'একই পিন আবার লিখুন', lk_cur: 'বর্তমান পিন লিখুন',
+  lk_enter: 'পিন লিখুন', lk_unlock: 'আনলক', lk_wrong: 'ভুল পিন', lk_wait: 'অনেকবার ভুল হয়েছে। {0} সেকেন্ড অপেক্ষা করুন।',
+  lk_mismatch: 'দুটি পিন মেলেনি', lk_short: '৪ থেকে ৮ অঙ্কের পিন দিন', lk_saved: 'পিন সংরক্ষিত হয়েছে', lk_removed: 'লক বন্ধ হয়েছে',
+  lk_forgot: 'পিন ভুলে গেছেন? রিসেট করার উপায় নেই, কারণ কিছুই অনলাইনে জমা থাকে না। ক্রোমে এই সাইটের ডেটা মুছলে লক সরে যাবে, তবে রিডিংও মুছে যাবে, তাই ব্যাকআপ ফাইল থেকে রিস্টোর করুন।',
+  lk_nocrypto: 'লক ব্যবহার করতে নিরাপদ (https) সংযোগ লাগবে।', lk_ok: 'ঠিক আছে', lk_cancel: 'বাতিল',
+  lk_note: 'এটি সাধারণ ব্যবহারকারীকে অ্যাপ থেকে দূরে রাখে। এটি এনক্রিপশন নয়।',
+  x_title: 'ডেটা', x_csv: 'CSV এক্সপোর্ট', x_backup: 'ব্যাকআপ ফাইল', x_restore: 'ব্যাকআপ রিস্টোর', x_refresh: 'অ্যাপ ফাইল রিফ্রেশ',
+  x_install: 'অ্যাপ ইনস্টল করুন', x_hint: 'ইনস্টল করতে ক্রোমের মেনু (⋮) থেকে Install app বা Add to Home screen বেছে নিন।',
+  x_csvdone: 'CSV এক্সপোর্ট হয়েছে', x_prep: 'ব্যাকআপ তৈরি হচ্ছে…', x_backdone: 'ব্যাকআপ ফাইল তৈরি হয়েছে', x_restdone: 'ব্যাকআপ রিস্টোর হয়েছে',
+  x_restconf: 'রিস্টোর করলে এই ফোনের রিডিং ও বিল প্রতিস্থাপিত হবে। এগিয়ে যাবেন?', x_installed: 'অ্যাপ ইনস্টল হয়েছে', x_reload: 'আবার লোড হচ্ছে…',
+  x_d_ok: 'সংরক্ষণ ঠিক আছে', x_d_bad: 'সংরক্ষণ হচ্ছে না', x_d_graph: 'গ্রাফ ঠিক আছে', x_d_nograph: 'গ্রাফ লাইব্রেরি নেই',
+  x_d_ocr: 'ছবি পড়া ঠিক আছে', x_d_noocr: 'ছবি পড়ার লাইব্রেরি নেই',
+  e_store: 'এই ব্রাউজার অ্যাপকে সংরক্ষণ করতে দিচ্ছে না ({0})। পেজ বন্ধ করলে রিডিং হারিয়ে যাবে। লিংকটি ক্রোমে খুলুন এবং মাঝে মাঝে ব্যাকআপ ফাইল তৈরি করুন।'
+}
+};
+
+let lang = 'en';
+const tr = (k, ...a) => {
+  let s = I18N[lang] && I18N[lang][k];
+  if (s === undefined) s = I18N.en[k];
+  if (s === undefined) return k;
+  a.forEach((v, i) => { s = s.split('{' + i + '}').join(v); });
+  return s;
+};
+const LOC = () => lang === 'bn' ? 'bn-BD' : 'en-IN';
+const UN = () => tr('unit');
+const nf = (n, o) => Number(n).toLocaleString(LOC(), o);
+const fmt = n => nf(Math.round(n * 10) / 10, {maximumFractionDigits: 1});
+const fmt2 = n => nf(n, {maximumFractionDigits: 2});
+const m2 = n => nf(n, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const ni = n => nf(Math.round(n));
+const tk = n => '৳' + ni(n);
+const pct = n => ni(n) + '%';
+const raw = n => nf(n, {useGrouping: false, maximumFractionDigits: 3});
+const lo = s => lang === 'bn' ? String(s).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]) : String(s);
+const bn2en = s => String(s).replace(/[০-৯]/g, d => '০১২৩৪৫৬৭৮৯'.indexOf(d));
+const num = s => parseFloat(bn2en(s).replace(/,/g, '.'));
+const dt = (t, o) => new Date(t).toLocaleString(LOC(), o);
+const when = t => dt(t, {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'});
+const short = t => dt(t, {day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'});
+const monthName = m => { const p = m.split('-'); return new Date(+p[0], +p[1] - 1, 1).toLocaleDateString(LOC(), {month: 'long', year: 'numeric'}); };
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+const store = (function () {
+  let dbp = null, mode = 'idb', warned = false;
+  const mem = {};
+  function open() {
+    if (dbp) return dbp;
+    dbp = new Promise((res, rej) => {
+      try {
+        const r = indexedDB.open('keyval-store', 1);
+        r.onupgradeneeded = () => { if (!r.result.objectStoreNames.contains('keyval')) r.result.createObjectStore('keyval'); };
+        r.onsuccess = () => res(r.result);
+        r.onerror = () => rej(r.error);
+        r.onblocked = () => rej(new Error('storage blocked'));
+      } catch (e) { rej(e); }
+    });
+    return dbp;
+  }
+  function fail(e) {
+    mode = 'mem';
+    if (!warned) { warned = true; window.showErr(tr('e_store', (e && e.name) || e)); }
+  }
+  async function get(k) {
+    if (mode === 'idb') {
+      try {
+        const db = await open();
+        return await new Promise((res, rej) => { const q = db.transaction('keyval').objectStore('keyval').get(k); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); });
+      } catch (e) { fail(e); }
+    }
+    return mem[k];
+  }
+  async function set(k, v) {
+    if (mode === 'idb') {
+      try {
+        const db = await open();
+        await new Promise((res, rej) => { const tx = db.transaction('keyval', 'readwrite'); tx.objectStore('keyval').put(v, k); tx.oncomplete = res; tx.onerror = () => rej(tx.error); tx.onabort = () => rej(tx.error); });
+        return;
+      } catch (e) { fail(e); }
+    }
+    mem[k] = v;
+  }
+  return {get, set, mode: () => mode};
+})();
+
+let checks = [], bills = [], settings = {load: 2, rent: 0, vat: 5}, ready = false;
+let files = {main: null, sub: null}, urls = [], bUrls = [], rUrls = [], showAll = false, chart = null, chartMode = 'cum', pending = [], toastTimer = null, deferredInstall = null;
+let ocrSt = {main: null, sub: null}, ocrWk = null, crK = null, crRect = null, crDrag = false, crSX = 0, crSY = 0, crPrev = null;
+let lkFails = 0, lkUntil = 0, lkHidden = 0, lkMode = null, lkAction = null, lkFirst = '';
+
+function toast(m) {
+  const t = $('toast'); t.textContent = m; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function diag() {
+  $('diag').textContent = VERSION + ' · ' + (store.mode() === 'idb' ? tr('x_d_ok') : tr('x_d_bad')) + ' · ' + (typeof Chart !== 'undefined' ? tr('x_d_graph') : tr('x_d_nograph')) + ' · ' + (typeof Tesseract !== 'undefined' ? tr('x_d_ocr') : tr('x_d_noocr'));
+}
+
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+  const m = document.querySelector('meta[name=theme-color]');
+  if (m) m.setAttribute('content', bg);
+  if (chart) summary();
+}
+const mq = window.matchMedia('(prefers-color-scheme: dark)');
+const savedTheme = () => { try { return localStorage.getItem('theme'); } catch (e) { return null; } };
+applyTheme(savedTheme() || (mq.matches ? 'dark' : 'light'));
+if (mq.addEventListener) mq.addEventListener('change', e => { if (!savedTheme()) applyTheme(e.matches ? 'dark' : 'light'); });
+$('theme').onclick = () => {
+  const n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  try { localStorage.setItem('theme', n); } catch (e) {}
+  applyTheme(n);
+};
+
+function initialLang() {
+  let l = null;
+  try { l = localStorage.getItem('lang'); } catch (e) {}
+  if (l === 'bn' || l === 'en') return l;
+  return ((navigator.language || '').toLowerCase().indexOf('bn') === 0) ? 'bn' : 'en';
+}
+function applyLang(l) {
+  lang = l;
+  try { localStorage.setItem('lang', l); } catch (e) {}
+  document.documentElement.setAttribute('lang', l);
+  document.title = tr('app');
+  document.querySelectorAll('[data-i]').forEach(e => { e.textContent = tr(e.dataset.i); });
+  document.querySelectorAll('[data-ip]').forEach(e => { e.placeholder = tr(e.dataset.ip); });
+  document.querySelectorAll('[data-ia]').forEach(e => { e.setAttribute('aria-label', tr(e.dataset.ia)); });
+  $('lang').textContent = l === 'bn' ? 'EN' : 'বাং';
+  lkCard(); lkPaint(); paintCrop();
+  ['main', 'sub'].forEach(k => { if (ocrSt[k]) chips(k, ocrSt[k].found, ocrSt[k].best); });
+  runCheck();
+}
+$('lang').onclick = () => {
+  applyLang(lang === 'bn' ? 'en' : 'bn');
+  if (ready) { updateSetSummary(); render(); diag(); }
+};
+
+function makeIcon(size) {
+  const c = document.createElement('canvas'); c.width = c.height = size;
+  const x = c.getContext('2d');
+  x.fillStyle = '#1a1a1a'; x.fillRect(0, 0, size, size);
+  x.fillStyle = '#F5C542'; x.beginPath();
+  [[.57,.16],[.30,.55],[.47,.55],[.42,.84],[.70,.44],[.53,.44]].forEach((p, i) => { if (i) x.lineTo(p[0] * size, p[1] * size); else x.moveTo(p[0] * size, p[1] * size); });
+  x.closePath(); x.fill();
+  return c.toDataURL('image/png');
+}
+(function setupPwa() {
+  try {
+    const base = location.href.split('#')[0].split('?')[0];
+    const i192 = makeIcon(192), i512 = makeIcon(512);
+    const man = {
+      name: 'Meter Log', short_name: 'Meter Log', description: 'Main and sub-meter readings, meter difference and bills',
+      start_url: base, scope: base.replace(/[^/]*$/, ''), display: 'standalone', orientation: 'portrait',
+      background_color: '#111113', theme_color: '#111113',
+      icons: [
+        {src: i192, sizes: '192x192', type: 'image/png', purpose: 'any'},
+        {src: i512, sizes: '512x512', type: 'image/png', purpose: 'any'},
+        {src: i512, sizes: '512x512', type: 'image/png', purpose: 'maskable'}
+      ]
+    };
+    const l = document.createElement('link'); l.rel = 'manifest';
+    l.href = URL.createObjectURL(new Blob([JSON.stringify(man)], {type: 'application/manifest+json'}));
+    document.head.appendChild(l);
+    const ic = document.createElement('link'); ic.rel = 'icon'; ic.href = i192; document.head.appendChild(ic);
+  } catch (e) {}
+  try { if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {}); } catch (e) {}
+})();
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; $('install').style.display = 'block'; });
+window.addEventListener('appinstalled', () => { $('install').style.display = 'none'; toast(tr('x_installed')); });
+$('install').onclick = async () => {
+  if (!deferredInstall) return;
+  deferredInstall.prompt(); await deferredInstall.userChoice;
+  deferredInstall = null; $('install').style.display = 'none';
+};
+$('refresh').onclick = async () => {
+  try {
+    if (window.caches) { const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); }
+    if (navigator.serviceWorker) { const rs = await navigator.serviceWorker.getRegistrations(); await Promise.all(rs.map(r => r.unregister())); }
+  } catch (e) {}
+  toast(tr('x_reload')); setTimeout(() => location.reload(), 500);
+};
+
+const DEMAND = 42;
+const TARIFFS = [
+  {key: 'tf_jun', from: '2026-06', lifeline: 4.63, slabs: [[75, 5.26], [200, 8.5], [300, 9.1], [400, 9.62], [600, 15.01], [Infinity, 17.35]]},
+  {key: 'tf_feb', from: '2024-03', lifeline: 4.63, slabs: [[75, 5.26], [200, 7.2], [300, 7.59], [400, 8.02], [600, 12.67], [Infinity, 14.61]]}
+];
+const tariffFor = m => TARIFFS.find(t => m >= t.from) || null;
+function energy(u, t) {
+  if (u <= 0) return 0;
+  if (u <= 50) return u * t.lifeline;
+  let prev = 0, tot = 0;
+  for (const [cap, r] of t.slabs) {
+    const n = Math.min(u, cap) - prev;
+    if (n > 0) tot += n * r;
+    prev = cap;
+    if (u <= cap) break;
+  }
+  return tot;
+}
+function bill(u, t) {
+  const e = energy(u, t), d = settings.load * DEMAND, r = settings.rent, sub = e + d + r;
+  const vat = Math.round(sub * settings.vat / 100);
+  return {e, d, r, vat, total: sub + vat};
+}
+
+const sorted = () => [...checks].sort((a, b) => a.ts - b.ts);
+const persist = () => store.set('checks', checks);
+const persistBills = () => store.set('bills', bills);
+const persistSettings = () => store.set('settings', settings);
+const noPhoto = v => ({kwh: v, photo: null, hash: null, photoTime: null});
+function dl(blob, name) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); }
+function pair(a, b) { const mu = b.main.kwh - a.main.kwh, su = b.sub.kwh - a.sub.kwh; return {mu, su, gap: mu - su, days: (b.ts - a.ts) / 864e5}; }
+function toChecks(rows) { return rows.map((r, i) => ({id: Date.now() + i, ts: r.ts, note: 'from notes', main: noPhoto(r.m), sub: noPhoto(r.s)})); }
+function met(id, v) { $(id).innerHTML = fmt(v) + '<span class="u"> ' + UN() + '</span>'; }
+const ago = h => h < 1 ? tr('ago_now') : h < 48 ? tr('ago_h', ni(h)) : tr('ago_d', ni(h / 24));
+
+function cumAt(rows, key, t) {
+  for (let i = 1; i < rows.length; i++) {
+    if (t <= rows[i].ts) {
+      const a = rows[i - 1], b = rows[i], f = (t - a.ts) / ((b.ts - a.ts) || 1);
+      return a[key].kwh + (b[key].kwh - a[key].kwh) * Math.max(0, f);
+    }
+  }
+  return rows[rows.length - 1][key].kwh;
+}
+function daily(rows) {
+  const out = [], end = rows[rows.length - 1].ts;
+  let d = new Date(rows[0].ts); d.setHours(24, 0, 0, 0);
+  while (true) {
+    const n = new Date(d); n.setDate(n.getDate() + 1);
+    if (n.getTime() > end) break;
+    out.push({label: d.toLocaleDateString(LOC(), {day: 'numeric', month: 'short'}),
+      m: cumAt(rows, 'main', n.getTime()) - cumAt(rows, 'main', d.getTime()),
+      s: cumAt(rows, 'sub', n.getTime()) - cumAt(rows, 'sub', d.getTime())});
+    d = n;
+  }
+  return out;
+}
+
+async function sha256(f) {
+  try {
+    const h = await crypto.subtle.digest('SHA-256', await f.arrayBuffer());
+    return [...new Uint8Array(h)].map(b => b.toString(16).padStart(2, '0')).join('');
+  } catch (e) { return 'n/a'; }
+}
+
+/* ---------- Photo reading with crop box ---------- */
+const crCv = $('crcv'), crCx = crCv.getContext('2d');
+function loadRect(k) { try { const r = JSON.parse(localStorage.getItem('crop-' + k)); if (r && r.w > 0.03 && r.h > 0.03) return r; } catch (e) {} return null; }
+function saveRect(k, r) { try { localStorage.setItem('crop-' + k, JSON.stringify(r)); } catch (e) {} }
+function lastFor(k) { const a = sorted(), l = a[a.length - 1]; return l ? l[k].kwh : null; }
+function plausible(k, n) { const p = lastFor(k); return p === null || (+n >= p && +n - p <= Math.max(3000, p * 0.5)); }
+function pickBest(k, c) {
+  if (!c.length) return null;
+  const p = lastFor(k);
+  if (p === null) return c[0];
+  const ok = c.filter(n => plausible(k, n));
+  if (ok.length) return ok.sort((a, b) => (+a - p) - (+b - p))[0];
+  return c.slice().sort((a, b) => Math.abs(+a - p) - Math.abs(+b - p))[0];
+}
+function extract(text) {
+  const out = [];
+  String(text).split(/\n/).forEach(line => {
+    const t = line.replace(/(\d)\s+(?=\d)/g, '$1');
+    (t.match(/\d+(?:\.\d+)?/g) || []).forEach(n => { if (n.replace('.', '').length >= 3 && n.length <= 9) out.push(n); });
+  });
+  return out;
+}
+function prepCrop(bmp, r, bin) {
+  const sx0 = Math.round(r.x * bmp.width), sy0 = Math.round(r.y * bmp.height);
+  const sw = Math.max(20, Math.round(r.w * bmp.width)), sh = Math.max(20, Math.round(r.h * bmp.height));
+  const big = Math.max(sw, sh); let sc = 1;
+  if (sh < 160) sc = Math.min(4, 160 / sh); else if (big > 1400) sc = 1400 / big;
+  const pad = 16, dw = Math.round(sw * sc), dh = Math.round(sh * sc), w2 = dw + pad * 2, h2 = dh + pad * 2;
+  const c = document.createElement('canvas'); c.width = w2; c.height = h2;
+  const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, w2, h2);
+  x.drawImage(bmp, sx0, sy0, sw, sh, pad, pad, dw, dh);
+  const im = x.getImageData(0, 0, w2, h2), d = im.data, n = w2 * h2, g = new Uint8Array(n), hist = new Array(256).fill(0);
+  let i;
+  for (i = 0; i < n; i++) { const v = Math.round(0.299 * d[i * 4] + 0.587 * d[i * 4 + 1] + 0.114 * d[i * 4 + 2]); g[i] = v; hist[v]++; }
+  let lw = 0, hg = 255, acc = 0;
+  for (i = 0; i < 256; i++) { acc += hist[i]; if (acc > n * 0.02) { lw = i; break; } }
+  acc = 0;
+  for (i = 255; i >= 0; i--) { acc += hist[i]; if (acc > n * 0.02) { hg = i; break; } }
+  if (hg <= lw) { lw = 0; hg = 255; }
+  for (i = 0; i < n; i++) { const s = (g[i] - lw) * 255 / (hg - lw); g[i] = s < 0 ? 0 : s > 255 ? 255 : s; }
+  if (bin) {
+    const hh = new Array(256).fill(0); let sum = 0;
+    for (i = 0; i < n; i++) hh[g[i]]++;
+    for (i = 0; i < 256; i++) sum += i * hh[i];
+    let sB = 0, wB = 0, mx = 0, th = 127;
+    for (i = 0; i < 256; i++) {
+      wB += hh[i]; if (!wB) continue;
+      const wF = n - wB; if (!wF) break;
+      sB += i * hh[i];
+      const mB = sB / wB, mF = (sum - sB) / wF, bt = wB * wF * (mB - mF) * (mB - mF);
+      if (bt > mx) { mx = bt; th = i; }
+    }
+    let dark = 0;
+    for (i = 0; i < n; i++) if (g[i] <= th) dark++;
+    const inv = dark > n * 0.5;
+    for (i = 0; i < n; i++) g[i] = ((g[i] <= th) !== inv) ? 0 : 255;
+  }
+  for (i = 0; i < n; i++) { d[i * 4] = d[i * 4 + 1] = d[i * 4 + 2] = g[i]; d[i * 4 + 3] = 255; }
+  x.putImageData(im, 0, 0);
+  return c;
+}
+async function readDigits(k, bmp, r, whole) {
+  const s = $('s-' + k);
+  s.textContent = tr('a_ocr_run');
+  chips(k, [], null);
+  try {
+    if (typeof Tesseract === 'undefined') throw new Error('no ocr');
+    if (!ocrWk) ocrWk = await Tesseract.createWorker('eng');
+    await ocrWk.setParameters({tessedit_char_whitelist: '0123456789.', tessedit_pageseg_mode: whole ? '11' : '7', user_defined_dpi: '300'});
+    const found = [];
+    for (let pass = 0; pass < 2; pass++) {
+      const res = await ocrWk.recognize(prepCrop(bmp, r, pass === 0));
+      extract(res.data.text).forEach(n => { if (found.indexOf(n) < 0) found.push(n); });
+      const b = pickBest(k, found);
+      if (b && plausible(k, b)) break;
+    }
+    const best = pickBest(k, found);
+    if (!ocrSt[k]) return;
+    ocrSt[k].found = found; ocrSt[k].best = best;
+    if (!best) { s.textContent = tr('a_ocr_none'); chips(k, found, null); return; }
+    $('r-' + k).value = best;
+    const p = lastFor(k);
+    s.textContent = (p !== null && +best < p) ? tr('ocr_lower', raw(p)) : tr('ocr_done', raw(best));
+    chips(k, found, best);
+  } catch (e) { s.textContent = tr('a_ocr_fail'); chips(k, [], null); }
+}
+function chips(k, found, best) {
+  const box = $('ocrx-' + k); box.innerHTML = '';
+  if (!ocrSt[k]) return;
+  const adj = document.createElement('button'); adj.className = 'alt sm'; adj.textContent = tr('ocr_adjust');
+  adj.onclick = () => openCrop(k);
+  box.appendChild(adj);
+  const others = (found || []).filter(n => n !== best).slice(0, 5);
+  if (others.length) {
+    const p = document.createElement('small'); p.textContent = tr('ocr_other'); p.style.marginTop = '8px'; box.appendChild(p);
+    const row = document.createElement('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px';
+    others.forEach(n => {
+      const b = document.createElement('button'); b.className = 'alt sm'; b.textContent = lo(n);
+      b.onclick = () => { $('r-' + k).value = n; };
+      row.appendChild(b);
+    });
+    box.appendChild(row);
+  }
+}
+function paintCrop() {
+  $('cr-h').textContent = tr('ocr_title'); $('cr-p').textContent = tr('ocr_help');
+  $('cr-go').textContent = tr('ocr_read'); $('cr-full').textContent = tr('ocr_full'); $('cr-x').textContent = tr('ocr_cancel');
+}
+function cropDraw() {
+  const s = ocrSt[crK]; if (!s) return;
+  const cw = crCv.width, ch = crCv.height;
+  crCx.drawImage(s.bmp, 0, 0, cw, ch);
+  const x = crRect.x * cw, y = crRect.y * ch, w = crRect.w * cw, h = crRect.h * ch;
+  crCx.fillStyle = 'rgba(0,0,0,.55)';
+  crCx.fillRect(0, 0, cw, y); crCx.fillRect(0, y + h, cw, ch - y - h); crCx.fillRect(0, y, x, h); crCx.fillRect(x + w, y, cw - x - w, h);
+  crCx.strokeStyle = '#F5C542'; crCx.lineWidth = Math.max(2, cw / 300); crCx.strokeRect(x, y, w, h);
+}
+function openCrop(k) {
+  const s = ocrSt[k]; if (!s) return;
+  crK = k;
+  const cw = Math.min(s.bmp.width, 1000), ch = Math.round(s.bmp.height * cw / s.bmp.width);
+  crCv.width = cw; crCv.height = ch;
+  crRect = loadRect(k) || {x: .15, y: .38, w: .7, h: .24};
+  paintCrop(); $('cropov').classList.add('on'); cropDraw();
+}
+function cropPt(e) {
+  const r = crCv.getBoundingClientRect();
+  return {x: Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), y: Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))};
+}
+crCv.onpointerdown = e => {
+  crDrag = true; crPrev = crRect; const p = cropPt(e); crSX = p.x; crSY = p.y; crRect = {x: p.x, y: p.y, w: 0, h: 0};
+  try { crCv.setPointerCapture(e.pointerId); } catch (x) {}
+  cropDraw(); e.preventDefault();
+};
+crCv.onpointermove = e => {
+  if (!crDrag) return;
+  const p = cropPt(e); crRect = {x: Math.min(crSX, p.x), y: Math.min(crSY, p.y), w: Math.abs(p.x - crSX), h: Math.abs(p.y - crSY)}; cropDraw();
+};
+crCv.onpointerup = crCv.onpointercancel = () => {
+  if (!crDrag) return;
+  crDrag = false;
+  if (crRect.w < 0.03 || crRect.h < 0.03) crRect = crPrev;
+  cropDraw();
+};
+$('cr-go').onclick = () => { const k = crK, s = ocrSt[k]; saveRect(k, crRect); $('cropov').classList.remove('on'); if (s) readDigits(k, s.bmp, crRect, false); };
+$('cr-full').onclick = () => { const k = crK, s = ocrSt[k]; $('cropov').classList.remove('on'); if (s) readDigits(k, s.bmp, {x: 0, y: 0, w: 1, h: 1}, true); };
+$('cr-x').onclick = () => { $('cropov').classList.remove('on'); if (ocrSt[crK]) chips(crK, ocrSt[crK].found, ocrSt[crK].best); };
+function clearK(k) {
+  if (ocrSt[k] && ocrSt[k].bmp && ocrSt[k].bmp.close) { try { ocrSt[k].bmp.close(); } catch (e) {} }
+  ocrSt[k] = null; $('ocrx-' + k).innerHTML = '';
+}
+['main', 'sub'].forEach(k => {
+  $('p-' + k).onchange = async e => {
+    const f = e.target.files[0];
+    files[k] = f || null;
+    clearK(k);
+    if (!f) { $('v-' + k).style.display = 'none'; return; }
+    $('v-' + k).src = URL.createObjectURL(f); $('v-' + k).style.display = 'block';
+    $('err').textContent = '';
+    let bmp;
+    try { bmp = await createImageBitmap(f); } catch (x) { $('s-' + k).textContent = tr('a_ocr_fail'); return; }
+    ocrSt[k] = {bmp: bmp, found: [], best: null};
+    const saved = loadRect(k);
+    if (saved) readDigits(k, bmp, saved, false); else openCrop(k);
+  };
+  $('r-' + k).oninput = () => { $('err').textContent = ''; };
+});
+
+$('save').onclick = async () => {
+  const m = num($('r-main').value), s = num($('r-sub').value);
+  if (isNaN(m) || isNaN(s)) { $('err').textContent = tr('a_err'); return; }
+  const last = sorted().pop();
+  if (last && (m < last.main.kwh || s < last.sub.kwh) && !confirm(tr('a_lower'))) return;
+  const mk = async (f, v) => f ? {kwh: v, photo: f, hash: await sha256(f), photoTime: f.lastModified} : noPhoto(v);
+  checks.push({id: Date.now(), ts: Date.now(), note: $('note').value.trim(), main: await mk(files.main, m), sub: await mk(files.sub, s)});
+  await persist();
+  ['main', 'sub'].forEach(k => { $('r-' + k).value = ''; $('p-' + k).value = ''; $('v-' + k).style.display = 'none'; $('s-' + k).textContent = tr('a_ocr_hint'); files[k] = null; clearK(k); });
+  $('note').value = '';
+  render();
+  $('to').value = sorted().pop().id; summary(); diag();
+  toast(tr('a_saved'));
+};
+
+/* ---------- Import from notes ---------- */
+function parseNotes(text) {
+  text = bn2en(text);
+  const rows = [], skipped = []; let d = null;
+  text.split(/\r?\n/).forEach(line => {
+    const t = line.trim(); if (!t) return;
+    const m = t.match(/^(?:(\d{1,2})\.+(\d{1,2})\.+(\d{2,4})[\s_]*)?(\d{1,2})[.:](\d{2})\s*(am|pm)?\.?\s*(.*)$/i);
+    if (!m) { skipped.push(t + ' ' + tr('i_s1')); return; }
+    if (m[1]) d = [+m[1], +m[2], m[3].length === 2 ? 2000 + +m[3] : +m[3]];
+    if (!d) { skipped.push(t + ' ' + tr('i_s2')); return; }
+    let h = +m[4]; const ap = (m[6] || '').toLowerCase();
+    if (ap === 'am' && h === 12) h = 0;
+    if (ap === 'pm' && h < 12) h += 12;
+    const nums = (m[7].match(/\d+(?:\.\d+)?/g) || []).map(Number);
+    if (nums.length < 2) { skipped.push(t + ' ' + tr('i_s3')); return; }
+    const two = nums.slice(-2);
+    rows.push({ts: new Date(d[2], d[1] - 1, d[0], h, +m[5]).getTime(), m: two[0], s: two[1]});
+  });
+  return {rows, skipped};
+}
+$('parse').onclick = () => {
+  const res = parseNotes($('paste').value), rows = res.rows, skipped = res.skipped;
+  const fresh = rows.filter(r => !checks.some(c => Math.abs(c.ts - r.ts) < 60000));
+  const dup = rows.length - fresh.length;
+  const all = [...checks.map(c => ({ts: c.ts, m: c.main.kwh, s: c.sub.kwh})), ...fresh].sort((a, b) => a.ts - b.ts);
+  const warn = [];
+  for (let i = 1; i < all.length; i++) if (all[i].m < all[i-1].m || all[i].s < all[i-1].s) warn.push(tr('i_low', short(all[i].ts)));
+  pending = fresh;
+  let t = tr('i_found', ni(fresh.length)) + (dup ? tr('i_dup', ni(dup)) : '') + (skipped.length ? tr('i_skip', ni(skipped.length)) : '');
+  if (skipped.length) t += tr('i_skipped') + skipped.join('\n');
+  if (warn.length) t += tr('i_warn') + warn.join('\n');
+  $('pv').textContent = t; $('pv').style.display = 'block';
+  $('commit').style.display = fresh.length ? 'block' : 'none';
+};
+$('commit').onclick = async () => {
+  const n = pending.length;
+  checks = checks.concat(toChecks(pending));
+  await persist();
+  pending = []; $('paste').value = ''; $('pv').style.display = 'none'; $('commit').style.display = 'none';
+  render();
+  const asc = sorted(); $('from').value = asc[0].id; $('to').value = asc[asc.length - 1].id; summary(); diag();
+  toast(tr('i_added', ni(n)));
+};
+
+/* ---------- Dashboard, compare, chart ---------- */
+function drawChart(rows) {
+  if (typeof Chart === 'undefined') { $('chartnote').textContent = tr('c_nochart'); return; }
+  const cs = getComputedStyle(document.documentElement);
+  const mu = cs.getPropertyValue('--mu').trim(), grid = cs.getPropertyValue('--bd').trim();
+  const axis = t => ({title: {display: true, text: t, color: mu}, ticks: {color: mu}, grid: {color: grid}});
+  if (chart) { chart.destroy(); chart = null; }
+  $('chartnote').textContent = '';
+  if (chartMode === 'cum') {
+    const t0 = rows[0].ts;
+    const mp = rows.map(r => ({x: (r.ts - t0) / 864e5, y: r.main.kwh - rows[0].main.kwh}));
+    const sp = rows.map(r => ({x: (r.ts - t0) / 864e5, y: r.sub.kwh - rows[0].sub.kwh}));
+    chart = new Chart($('chart'), {type: 'scatter',
+      data: {datasets: [
+        {data: mp, showLine: true, borderColor: '#378ADD', backgroundColor: '#378ADD', pointRadius: 2, borderWidth: 2},
+        {data: sp, showLine: true, borderColor: '#1D9E75', backgroundColor: '#1D9E75', pointRadius: 2, borderWidth: 2}
+      ]},
+      options: {responsive: true, maintainAspectRatio: false, animation: false, plugins: {legend: {display: false}}, scales: {x: axis(tr('c_ax_days')), y: axis(tr('c_ax_cum'))}}});
+  } else {
+    const d = daily(rows);
+    if (!d.length) $('chartnote').textContent = tr('c_nodays');
+    chart = new Chart($('chart'), {type: 'bar',
+      data: {labels: d.map(x => x.label), datasets: [
+        {data: d.map(x => Math.round(x.m * 10) / 10), backgroundColor: '#378ADD'},
+        {data: d.map(x => Math.round(x.s * 10) / 10), backgroundColor: '#1D9E75'}
+      ]},
+      options: {responsive: true, maintainAspectRatio: false, animation: false, plugins: {legend: {display: false}},
+        scales: {x: {ticks: {color: mu, maxRotation: 0, autoSkip: true}, grid: {display: false}}, y: axis(tr('c_ax_day'))}}});
+  }
+}
+$('m-cum').onclick = () => { chartMode = 'cum'; $('m-cum').classList.add('on'); $('m-day').classList.remove('on'); summary(); };
+$('m-day').onclick = () => { chartMode = 'day'; $('m-day').classList.add('on'); $('m-cum').classList.remove('on'); summary(); };
+
+function dash() {
+  const asc = sorted();
+  if (!asc.length) { $('due').textContent = tr('d_none'); $('due').className = 'pill'; $('hl').textContent = ''; }
+  else {
+    const last = asc[asc.length - 1], h = (Date.now() - last.ts) / 36e5;
+    $('hl').textContent = tr('d_last', when(last.ts), ago(h));
+    $('due').textContent = h > 26 ? tr('d_due') : tr('d_ok');
+    $('due').className = 'pill ' + (h > 26 ? 'warn' : 'ok');
+  }
+  if (asc.length < 2) { $('hd').textContent = '-'; $('hp').textContent = tr('d_need2'); $('dm').textContent = '-'; $('ds').textContent = '-'; return; }
+  const p = pair(asc[0], asc[asc.length - 1]);
+  $('hd').innerHTML = fmt(p.gap) + '<span class="u"> ' + UN() + '</span>';
+  $('hp').textContent = p.mu > 0 ? tr('d_hero', pct(p.gap / p.mu * 100), fmt(p.days), short(asc[0].ts)) : '-';
+  met('dm', p.mu); met('ds', p.su);
+}
+
+function summary() {
+  const asc = sorted();
+  const ia = asc.findIndex(k => String(k.id) === $('from').value), ib = asc.findIndex(k => String(k.id) === $('to').value);
+  const lo2 = Math.min(ia, ib), hi = Math.max(ia, ib);
+  if (lo2 < 0 || lo2 === hi) {
+    ['cm', 'cs', 'cg', 'cp'].forEach(i => { $(i).textContent = '-'; });
+    $('detail').textContent = tr('c_pick');
+    $('impact').style.display = 'none';
+    if (chart) { chart.destroy(); chart = null; }
+    return;
+  }
+  const p = pair(asc[lo2], asc[hi]), rate = num($('rate').value);
+  met('cm', p.mu); met('cs', p.su); met('cg', p.gap);
+  $('cp').textContent = p.mu > 0 ? pct(p.gap / p.mu * 100) : '-';
+  let t = tr('c_days', fmt(p.days));
+  if (p.days > 0) t += tr('c_perday', fmt(p.mu / p.days), fmt(p.su / p.days));
+  if (!isNaN(rate)) t += tr('c_ratenote', tk(p.gap * rate), fmt2(rate));
+  $('detail').textContent = t;
+  const tf = TARIFFS[0];
+  if (p.days > 0 && p.mu > 0) {
+    const mm = p.mu / p.days * 30, ss = p.su / p.days * 30;
+    const bm = bill(mm, tf).total, bs = bill(ss, tf).total;
+    $('impact').textContent = tr('c_impact', tr(tf.key), fmt(mm) + ' ' + UN(), tk(bm), fmt(ss) + ' ' + UN(), tk(bs), tk(bm - bs));
+    $('impact').style.display = 'block';
+  } else $('impact').style.display = 'none';
+  drawChart(asc.slice(lo2, hi + 1));
+}
+['from', 'to', 'rate'].forEach(id => $(id).addEventListener('input', summary));
+
+/* ---------- History ---------- */
+function render() {
+  urls.forEach(u => URL.revokeObjectURL(u)); urls = [];
+  const url = b => { const x = URL.createObjectURL(b); urls.push(x); return x; };
+  const asc = sorted();
+  const html = [];
+  for (let i = asc.length - 1; i >= 0; i--) {
+    const k = asc[i], p = i ? pair(asc[i - 1], k) : null;
+    let th = '';
+    if (k.main.photo || k.sub.photo) {
+      th = '<div class="th">';
+      if (k.main.photo) { const a = url(k.main.photo); th += `<a href="${a}" target="_blank"><img src="${a}" alt="${tr('a_main')}"></a>`; }
+      if (k.sub.photo) { const b = url(k.sub.photo); th += `<a href="${b}" target="_blank"><img src="${b}" alt="${tr('a_sub')}"></a>`; }
+      th += '</div>';
+    }
+    const pc = p && p.mu > 0 ? Math.round(p.gap / p.mu * 100) : null;
+    const cls = pc === null ? '' : pc < 15 ? 'ok' : pc < 40 ? 'warn' : 'bad';
+    const pill = `<span class="pill ${cls}">${pc === null ? (p ? '-' : tr('h_first')) : tr('h_diff', pct(pc))}</span>`;
+    const hasH = k.main.hash && k.sub.hash;
+    html.push(`<div class="rec"><div class="head"><b>${when(k.ts)}</b>${pill}</div>
+      <div>${tr('h_main')} <b>${raw(k.main.kwh)}</b>${p ? ' <small style="display:inline">+' + fmt(p.mu) + '</small>' : ''} · ${tr('h_sub')} <b>${raw(k.sub.kwh)}</b>${p ? ' <small style="display:inline">+' + fmt(p.su) + '</small>' : ''}</div>
+      ${p ? '<small>' + tr('h_md', fmt(p.gap) + ' ' + UN()) + '</small>' : ''}
+      ${th}
+      <small>${k.note ? esc(k.note) + ' · ' : ''}${hasH ? 'SHA-256 ' + k.main.hash.slice(0, 8) + ' / ' + k.sub.hash.slice(0, 8) : (k.main.photo || k.sub.photo ? tr('h_part') : tr('h_nophoto'))}</small>
+      <button class="alt sm noprint" data-id="${k.id}">${tr('h_delete')}</button></div>`);
+  }
+  $('list').innerHTML = html.length ? (showAll ? html : html.slice(0, 6)).join('') : '<div class="empty">' + tr('h_empty') + '</div>';
+  $('more').textContent = showAll ? tr('h_latest') : tr('h_all', ni(html.length));
+  $('more').style.display = html.length > 6 ? 'block' : 'none';
+
+  const kf = $('from').value, kt = $('to').value;
+  const opts = asc.map(k => `<option value="${k.id}">${short(k.ts)}</option>`).join('');
+  $('from').innerHTML = opts; $('to').innerHTML = opts;
+  if (asc.length) {
+    $('from').value = asc.find(k => String(k.id) === kf) ? kf : asc[0].id;
+    $('to').value = asc.find(k => String(k.id) === kt) ? kt : asc[asc.length - 1].id;
+  }
+  dash(); summary(); renderBills(); fillMonths(); renderReport();
+}
+$('list').onclick = async e => {
+  const b = e.target.closest('button[data-id]');
+  if (!b || !confirm(tr('h_confirm'))) return;
+  checks = checks.filter(k => k.id !== +b.dataset.id);
+  await persist(); render(); toast(tr('h_deleted'));
+};
+$('more').onclick = () => { showAll = !showAll; render(); };
+
+/* ---------- Bills ---------- */
+function renderBills() {
+  bUrls.forEach(u => URL.revokeObjectURL(u)); bUrls = [];
+  const asc = sorted();
+  let ratio = null;
+  if (asc.length >= 2) { const p = pair(asc[0], asc[asc.length - 1]); if (p.mu > 0) ratio = p.su / p.mu; }
+  let paid = 0, over = 0, n = 0;
+  const B = $('bills'); B.innerHTML = '';
+  [...bills].sort((a, b) => a.month.localeCompare(b.month)).forEach(x => {
+    const tf = tariffFor(x.month);
+    if (x.amount != null) paid += x.amount;
+    let sm = '';
+    if (!tf) sm = tr('b_old');
+    else {
+      const off = bill(x.units, tf).total;
+      sm = tr('b_off', tk(off));
+      if (x.amount != null) { const d = x.amount - off; sm += tr('b_paidvs', d >= 0 ? '+' : '-', tk(Math.abs(d))); }
+      if (ratio !== null) {
+        const au = x.units * ratio, ao = bill(au, tf).total, base = x.amount != null ? x.amount : off, o = base - ao;
+        sm += tr('b_share', pct(ratio * 100), fmt(au) + ' ' + UN(), tk(ao), tk(o));
+        over += o; n++;
+      }
+    }
+    let link = '';
+    if (x.photo) { const u = URL.createObjectURL(x.photo); bUrls.push(u); link = ' · <a href="' + u + '" target="_blank">' + tr('b_photolink') + '</a>'; }
+    const d = document.createElement('div'); d.className = 'rec';
+    d.innerHTML = '<div class="head"><span><b>' + esc(lo(x.month)) + '</b> · ' + fmt(x.units) + ' ' + UN() + (x.amount != null ? ' · ' + tr('b_paid', tk(x.amount)) : '') + link + '</span><button class="alt sm noprint" data-bid="' + x.id + '">' + tr('b_remove') + '</button></div><small style="white-space:pre-line">' + esc(sm) + '</small>';
+    B.appendChild(d);
+  });
+  if (!bills.length) { $('best').textContent = tr('b_empty'); return; }
+  let txt = tr('b_count', ni(bills.length)) + (paid ? tr('b_paidtot', tk(paid)) : '');
+  if (n) txt += tr('b_over', ni(n), tk(over));
+  else if (ratio === null) txt += tr('b_need2');
+  $('best').textContent = txt;
+}
+$('bills').onclick = async e => {
+  const b = e.target.closest('button[data-bid]');
+  if (!b || !confirm(tr('b_confirm'))) return;
+  bills = bills.filter(x => x.id !== +b.dataset.bid);
+  await persistBills(); renderBills(); renderReport(); toast(tr('b_removed'));
+};
+$('addbill').onclick = async () => {
+  const month = bn2en($('b-month').value.trim()), units = num($('b-units').value), amt = num($('b-amt').value);
+  if (!/^\d{4}-\d{2}$/.test(month) || isNaN(units)) { $('b-err').textContent = tr('b_err'); return; }
+  bills.push({id: Date.now(), month, units, amount: isNaN(amt) ? null : amt, photo: $('b-photo').files[0] || null});
+  await persistBills();
+  ['b-month', 'b-units', 'b-amt', 'b-photo'].forEach(i => { $(i).value = ''; });
+  $('b-err').textContent = '';
+  renderBills(); renderReport(); toast(tr('b_added'));
+};
+['b-month', 'b-units'].forEach(id => $(id).addEventListener('input', () => { $('b-err').textContent = ''; }));
+
+function updateSetSummary() { $('setsum').textContent = tr('b_settings', fmt2(settings.load), tk(settings.rent), fmt2(settings.vat)); }
+function loadSettingsInputs() { $('set-load').value = settings.load; $('set-rent').value = settings.rent; $('set-vat').value = settings.vat; updateSetSummary(); }
+['load', 'rent', 'vat'].forEach(k => {
+  $('set-' + k).addEventListener('input', async () => {
+    const v = num($('set-' + k).value);
+    settings[k] = isNaN(v) ? 0 : v;
+    updateSetSummary();
+    await persistSettings(); summary(); renderBills(); renderReport(); runCheck();
+  });
+});
+
+/* ---------- Bill check ---------- */
+function slabRows(u, t) {
+  const rows = [];
+  if (u <= 0) return rows;
+  if (u <= 50) { rows.push(['1-50', u, t.lifeline]); return rows; }
+  let prev = 0;
+  for (const [cap, r] of t.slabs) {
+    const n = Math.min(u, cap) - prev;
+    if (n > 0) rows.push([(prev + 1) + (cap === Infinity ? '+' : '-' + cap), n, r]);
+    prev = cap; if (u <= cap) break;
+  }
+  return rows;
+}
+function runCheck() {
+  const out = $('bc-out'); $('bc-err').textContent = '';
+  const month = bn2en($('bc-month').value.trim());
+  const prev = num($('bc-prev').value), pres = num($('bc-pres').value);
+  let omf = num($('bc-omf').value); if (isNaN(omf) || omf <= 0) omf = 1;
+  if (!isNaN(prev) && !isNaN(pres)) $('bc-units').value = String(Math.round((pres - prev) * omf * 100) / 100);
+  const units = num($('bc-units').value);
+  if (!/^\d{4}-\d{2}$/.test(month) || isNaN(units)) { out.style.display = 'none'; return null; }
+  const tf = tariffFor(month);
+  if (!tf) { out.style.display = 'block'; out.textContent = tr('b_old'); return null; }
+  let load = num($('bc-load').value); if (isNaN(load)) load = settings.load;
+  let other = num($('bc-other').value); if (isNaN(other)) other = 0;
+  let adj = num($('bc-adj').value); if (isNaN(adj)) adj = 0;
+  const e = Math.round(energy(units, tf) * 100) / 100, d = load * DEMAND;
+  const base = e + d + other, vat = Math.round(base * settings.vat / 100), total = base + vat, payExp = total + adj;
+  const pe = num($('bc-elec').value), pd = num($('bc-dem').value), pv = num($('bc-vat').value), pp = num($('bc-pay').value);
+  let bad = 0, near = 0;
+  function row(label, printed, app) {
+    let s = '', c = '';
+    if (!isNaN(printed)) {
+      const df = Math.abs(printed - app);
+      if (df <= 0.01) { s = '✓'; c = 'var(--ok)'; }
+      else if (df < 1) { s = '≈'; c = 'var(--warn)'; near++; }
+      else { s = '✗'; c = 'var(--bad)'; bad++; }
+    }
+    return '<tr><td>' + label + '</td><td>' + (isNaN(printed) ? '-' : m2(printed)) + '</td><td>' + m2(app) + '</td><td style="color:' + c + ';font-weight:700">' + s + '</td></tr>';
+  }
+  let h = '<b>' + tr('bc_calc') + '</b><table class="rt">';
+  slabRows(units, tf).forEach(r => {
+    h += '<tr><td>' + lo(r[0]) + ' ' + tr('bc_units_word') + '</td><td>' + nf(r[1]) + ' × ' + m2(r[2]) + '</td><td>' + m2(Math.round(r[1] * r[2] * 100) / 100) + '</td></tr>';
+  });
+  h += '</table><table class="rt"><tr><th>' + tr('bc_line') + '</th><th>' + tr('bc_yours') + '</th><th>' + tr('bc_app') + '</th><th></th></tr>';
+  h += row(tr('bc_l_elec'), pe, e);
+  h += row(tr('bc_l_dem', nf(load), ni(DEMAND)), pd, d);
+  if (other) h += row(tr('bc_l_other'), other, other);
+  h += row(tr('bc_l_vat', nf(settings.vat)), pv, vat);
+  h += row(tr('bc_l_total'), NaN, total);
+  if (adj) h += row(tr('bc_l_adj'), adj, adj);
+  h += row(tr('bc_l_pay'), pp, payExp);
+  h += '</table>';
+  if (!isNaN(pe) || !isNaN(pd) || !isNaN(pv) || !isNaN(pp)) h += '<small style="margin-top:8px">' + (bad ? tr('bc_bad', ni(bad)) : tr('bc_ok')) + (near ? ' ' + tr('bc_paisa') : '') + '</small>';
+  out.innerHTML = h; out.style.display = 'block';
+  return {month: month, units: units, pay: pp};
+}
+$('sec-check').addEventListener('input', runCheck);
+$('bc-save').onclick = async () => {
+  const r = runCheck();
+  if (!r) { $('bc-err').textContent = tr('bc_need'); return; }
+  bills.push({id: Date.now(), month: r.month, units: r.units, amount: isNaN(r.pay) ? null : r.pay, photo: $('bc-photo').files[0] || null});
+  await persistBills(); renderBills(); renderReport(); toast(tr('bc_saved'));
+};
+
+/* ---------- Monthly report ---------- */
+function fillMonths() {
+  const s = new Set(checks.map(k => { const d = new Date(k.ts); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); }));
+  const ms = [...s].sort(), keep = $('rm').value;
+  $('rm').innerHTML = ms.map(m => `<option value="${m}">${monthName(m)}</option>`).join('');
+  if (ms.length) $('rm').value = ms.includes(keep) ? keep : ms[ms.length - 1];
+}
+function reportData(m) {
+  const asc = sorted(); if (asc.length < 2) return null;
+  const p = m.split('-').map(Number), y = p[0], mo = p[1];
+  const ms = new Date(y, mo - 1, 1).getTime(), me = new Date(y, mo, 1).getTime();
+  const a = Math.max(ms, asc[0].ts), b = Math.min(me, asc[asc.length - 1].ts);
+  if (b <= a) return null;
+  const mu = cumAt(asc, 'main', b) - cumAt(asc, 'main', a), su = cumAt(asc, 'sub', b) - cumAt(asc, 'sub', a);
+  return {a, b, mu, su, gap: mu - su, days: (b - a) / 864e5, rows: asc.filter(k => k.ts >= ms && k.ts < me), asc};
+}
+function reportText(m, d) {
+  const u = ' ' + UN();
+  const ofm = d.mu > 0 ? tr('r_ofmain', pct(d.gap / d.mu * 100)) : '';
+  let txt = tr('r_text', monthName(m), short(d.a), short(d.b), fmt(d.days), fmt(d.mu) + u, fmt(d.su) + u, fmt(d.gap) + u, ofm);
+  const tf = tariffFor(m);
+  if (tf && d.mu > 0 && d.days > 0) {
+    const bm = bill(d.mu / d.days * 30, tf).total, bs = bill(d.su / d.days * 30, tf).total;
+    txt += tr('r_text_bill', tk(bm), tk(bs), tk(bm - bs));
+  }
+  return txt;
+}
+function renderReport() {
+  rUrls.forEach(u => URL.revokeObjectURL(u)); rUrls = [];
+  const m = $('rm').value, R = $('report');
+  if (!m) { R.innerHTML = '<div class="empty">' + tr('r_none') + '</div>'; return; }
+  const d = reportData(m);
+  if (!d) { R.innerHTML = '<div class="empty">' + tr('r_notenough', monthName(m)) + '</div>'; return; }
+  const pc = d.mu > 0 ? d.gap / d.mu * 100 : null, tf = tariffFor(m), u = ' ' + UN();
+  let h = `<div style="font-size:18px;font-weight:700;margin-top:12px">${tr('r_head')}</div>
+    <div class="muted">${tr('r_period', monthName(m), short(d.a), short(d.b), fmt(d.days))}</div>
+    <table class="rt">
+      <tr><td>${tr('d_main')}</td><td><b>${fmt(d.mu)}</b>${u}</td></tr>
+      <tr><td>${tr('d_sub')}</td><td><b>${fmt(d.su)}</b>${u}</td></tr>
+      <tr><td>${tr('c_md')}</td><td><b>${fmt(d.gap)}</b>${u}${pc !== null ? tr('r_ofmain', pct(pc)) : ''}</td></tr>
+      <tr><td>${tr('r_avg')}</td><td>${tr('r_avgv', fmt(d.mu / d.days), fmt(d.su / d.days))}</td></tr>`;
+  if (tf && d.mu > 0) {
+    const bm = bill(d.mu / d.days * 30, tf).total, bs = bill(d.su / d.days * 30, tf).total;
+    h += `<tr><td>${tr('r_pm')}</td><td>${tk(bm)}</td></tr>
+      <tr><td>${tr('r_ps')}</td><td>${tk(bs)}</td></tr>
+      <tr><td>${tr('r_bd')}</td><td><b>${tr('r_about', tk(bm - bs))}</b></td></tr>`;
+  }
+  h += '</table>';
+  const mb = bills.filter(b => b.month === m);
+  if (mb.length) h += '<div style="margin-top:12px;font-weight:600">' + tr('r_bills') + '</div>' + mb.map(b => '<div class="muted">' + tr('r_billed', fmt(b.units) + u) + (b.amount != null ? tr('r_paidc', tk(b.amount)) : '') + '</div>').join('');
+  const idx = new Map(d.asc.map((k, i) => [k.id, i]));
+  h += `<div style="margin-top:12px;font-weight:600">${tr('r_reads')}</div><table class="rt"><tr><th>${tr('th_when')}</th><th>${tr('th_main')}</th><th>${tr('th_sub')}</th><th>${tr('th_pm')}</th><th>${tr('th_ps')}</th><th>${tr('th_diff')}</th></tr>`;
+  d.rows.forEach(k => {
+    const i = idx.get(k.id), p = i ? pair(d.asc[i - 1], k) : null;
+    h += `<tr><td>${short(k.ts)}</td><td>${raw(k.main.kwh)}</td><td>${raw(k.sub.kwh)}</td><td>${p ? '+' + fmt(p.mu) : '-'}</td><td>${p ? '+' + fmt(p.su) : '-'}</td><td>${p && p.mu > 0 ? pct(p.gap / p.mu * 100) : '-'}</td></tr>`;
+  });
+  h += '</table>';
+  const ph = d.rows.filter(k => k.main.photo || k.sub.photo);
+  if (ph.length) {
+    h += '<div style="margin-top:12px;font-weight:600">' + tr('r_photos') + '</div>';
+    ph.forEach(k => {
+      h += `<div class="muted" style="margin-top:8px">${short(k.ts)}</div><div class="th">`;
+      if (k.main.photo) { const uu = URL.createObjectURL(k.main.photo); rUrls.push(uu); h += `<img src="${uu}" alt="${tr('a_main')}">`; }
+      if (k.sub.photo) { const uu = URL.createObjectURL(k.sub.photo); rUrls.push(uu); h += `<img src="${uu}" alt="${tr('a_sub')}">`; }
+      h += '</div>';
+    });
+  }
+  h += `<small style="margin-top:12px">${tr('r_foot', when(Date.now()))}</small>`;
+  R.innerHTML = h;
+}
+$('rm').addEventListener('input', renderReport);
+$('rprint').onclick = () => { document.body.classList.add('pr'); window.print(); };
+window.addEventListener('afterprint', () => document.body.classList.remove('pr'));
+$('rshare').onclick = async () => {
+  const m = $('rm').value, d = m && reportData(m);
+  if (!d) { toast(tr('r_nothing')); return; }
+  const text = reportText(m, d);
+  try {
+    if (navigator.share) { await navigator.share({title: tr('r_sharetitle', monthName(m)), text}); return; }
+    await navigator.clipboard.writeText(text); toast(tr('r_copied'));
+  } catch (e) {}
+};
+
+/* ---------- CSV, backup, restore ---------- */
+$('csv').onclick = () => {
+  const q = s => '"' + String(s || '').replace(/"/g, '""') + '"';
+  const iso = t => t ? new Date(t).toISOString() : '';
+  const rows = ['type,when,main_unit_kwh,sub_unit_kwh,main_used,sub_used,meter_difference,billed_unit_kwh,amount_paid,note,main_photo_time,sub_photo_time,main_sha256,sub_sha256'];
+  const asc = sorted();
+  asc.forEach((k, i) => {
+    const p = i ? pair(asc[i - 1], k) : null;
+    rows.push(['reading', new Date(k.ts).toISOString(), k.main.kwh, k.sub.kwh, p ? p.mu : '', p ? p.su : '', p ? p.gap : '', '', '', q(k.note), iso(k.main.photoTime), iso(k.sub.photoTime), k.main.hash || '', k.sub.hash || ''].join(','));
+  });
+  bills.forEach(x => rows.push(['bill', x.month, '', '', '', '', '', x.units, x.amount == null ? '' : x.amount, '', '', '', '', ''].join(',')));
+  dl(new Blob(['\ufeff' + rows.join('\n')], {type: 'text/csv;charset=utf-8'}), 'meter-log.csv');
+  toast(tr('x_csvdone'));
+};
+const b64 = f => new Promise(r => { const x = new FileReader(); x.onload = () => r(x.result); x.readAsDataURL(f); });
+const unb64 = async u => (await fetch(u)).blob();
+const encM = async x => ({...x, photo: x.photo ? await b64(x.photo) : null});
+const decM = async x => ({...x, photo: x.photo ? await unb64(x.photo) : null});
+$('backup').onclick = async () => {
+  toast(tr('x_prep'));
+  const c = [], b = [];
+  for (const k of checks) c.push({...k, main: await encM(k.main), sub: await encM(k.sub)});
+  for (const x of bills) b.push(await encM(x));
+  dl(new Blob([JSON.stringify({checks: c, bills: b, settings})], {type: 'application/json'}), 'meter-backup.json');
+  toast(tr('x_backdone'));
+};
+$('restoreBtn').onclick = () => $('restore').click();
+$('restore').onchange = async e => {
+  const f = e.target.files[0];
+  if (!f || !confirm(tr('x_restconf'))) return;
+  const d = JSON.parse(await f.text());
+  checks = []; bills = [];
+  for (const k of d.checks || []) checks.push({...k, main: await decM(k.main), sub: await decM(k.sub)});
+  for (const x of d.bills || []) bills.push(await decM(x));
+  if (d.settings) settings = Object.assign(settings, d.settings);
+  await persist(); await persistBills(); await persistSettings();
+  loadSettingsInputs(); render(); toast(tr('x_restdone'));
+};
+
+/* ---------- App lock ---------- */
+const LK_KEY = 'lockv1', LK_AWAY = 120000;
+const CR = !!(window.crypto && window.crypto.subtle);
+const lkEnc = new TextEncoder();
+function abToB64(buf) { let s = ''; new Uint8Array(buf).forEach(b => { s += String.fromCharCode(b); }); return btoa(s); }
+function b64ToU8(s) { const a = atob(s), u = new Uint8Array(a.length); for (let i = 0; i < a.length; i++) u[i] = a.charCodeAt(i); return u; }
+async function lkDerive(pin, salt) {
+  const k = await crypto.subtle.importKey('raw', lkEnc.encode(pin), 'PBKDF2', false, ['deriveBits']);
+  return abToB64(await crypto.subtle.deriveBits({name: 'PBKDF2', salt: salt, iterations: 150000, hash: 'SHA-256'}, k, 256));
+}
+function lkGet() { try { return JSON.parse(localStorage.getItem(LK_KEY)); } catch (e) { return null; } }
+async function lkMake(pin) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  localStorage.setItem(LK_KEY, JSON.stringify({s: abToB64(salt), h: await lkDerive(pin, salt)}));
+}
+async function lkCheck(pin) { const l = lkGet(); if (!l) return true; return (await lkDerive(pin, b64ToU8(l.s))) === l.h; }
+function lkPaint() {
+  if (!$('lockov').classList.contains('on')) return;
+  const pm = {unlock: 'lk_enter', cur: 'lk_cur', 'new': 'lk_new', again: 'lk_again'};
+  $('lk-h').textContent = tr('app');
+  $('lk-p').textContent = tr(pm[lkMode]);
+  $('lk-go').textContent = lkMode === 'unlock' ? tr('lk_unlock') : tr('lk_ok');
+  $('lk-cancel').textContent = tr('lk_cancel');
+  $('lk-cancel').style.display = lkMode === 'unlock' ? 'none' : 'block';
+  $('lk-forgot').textContent = lkMode === 'unlock' ? tr('lk_forgot') : '';
+  $('lk-lang').textContent = lang === 'bn' ? 'EN' : 'বাং';
+}
+function lkShow(m) { lkMode = m; $('lockov').classList.add('on'); $('lockpin').value = ''; $('lk-e').textContent = ''; lkPaint(); setTimeout(() => $('lockpin').focus(), 60); }
+function lkHide() { $('lockov').classList.remove('on'); $('lockpin').value = ''; }
+async function lkGo() {
+  const v = bn2en($('lockpin').value).replace(/\D/g, ''), e = $('lk-e'); e.textContent = '';
+  if (lkMode === 'unlock' || lkMode === 'cur') {
+    const now = Date.now();
+    if (now < lkUntil) { e.textContent = tr('lk_wait', Math.ceil((lkUntil - now) / 1000)); return; }
+    if (await lkCheck(v)) {
+      lkFails = 0;
+      if (lkMode === 'unlock') lkHide();
+      else if (lkAction === 'remove') { localStorage.removeItem(LK_KEY); lkHide(); toast(tr('lk_removed')); lkCard(); }
+      else lkShow('new');
+    } else {
+      lkFails++;
+      if (lkFails >= 5) { lkUntil = Date.now() + 30000; lkFails = 0; e.textContent = tr('lk_wait', 30); }
+      else e.textContent = tr('lk_wrong');
+      $('lockpin').value = '';
+    }
+  } else if (lkMode === 'new') {
+    if (v.length < 4 || v.length > 8) { e.textContent = tr('lk_short'); return; }
+    lkFirst = v; lkShow('again');
+  } else if (lkMode === 'again') {
+    if (v !== lkFirst) { e.textContent = tr('lk_mismatch'); return; }
+    await lkMake(v); lkFirst = ''; lkHide(); toast(tr('lk_saved')); lkCard();
+  }
+}
+$('lk-go').onclick = lkGo;
+$('lk-cancel').onclick = lkHide;
+$('lk-lang').onclick = () => { $('lang').click(); lkPaint(); };
+$('lockpin').onkeydown = e => { if (e.key === 'Enter') lkGo(); };
+$('lockpin').oninput = function () { this.value = bn2en(this.value).replace(/\D/g, ''); $('lk-e').textContent = ''; };
+function lkCard() {
+  const on = !!lkGet(), el = $('sec-lock');
+  let h = '<h2>' + tr('lk_title') + '</h2>';
+  if (!CR) h += '<small>' + tr('lk_nocrypto') + '</small>';
+  else {
+    h += '<small>' + (on ? tr('lk_on') : tr('lk_off')) + '</small>';
+    if (on) h += '<div class="two"><button class="alt" id="lc-change">' + tr('lk_change') + '</button><button class="alt" id="lc-remove">' + tr('lk_remove') + '</button></div><button id="lc-now">' + tr('lk_now') + '</button>';
+    else h += '<button id="lc-set">' + tr('lk_set') + '</button>';
+    h += '<small style="margin-top:10px">' + tr('lk_note') + '</small>';
+  }
+  el.innerHTML = h;
+  let b;
+  if ((b = $('lc-set'))) b.onclick = () => { lkAction = 'set'; lkShow('new'); };
+  if ((b = $('lc-change'))) b.onclick = () => { lkAction = 'change'; lkShow('cur'); };
+  if ((b = $('lc-remove'))) b.onclick = () => { lkAction = 'remove'; lkShow('cur'); };
+  if ((b = $('lc-now'))) b.onclick = () => lkShow('unlock');
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) lkHidden = Date.now();
+  else if (CR && lkGet() && lkHidden && Date.now() - lkHidden > LK_AWAY) lkShow('unlock');
+});
+
+/* ---------- Start ---------- */
+applyLang(initialLang());
+if (CR && lkGet()) lkShow('unlock');
+(async () => {
+  try {
+    checks = (await store.get('checks')) || [];
+    bills = (await store.get('bills')) || [];
+    settings = Object.assign({load: 2, rent: 0, vat: 5}, (await store.get('settings')) || {});
+  } catch (e) { window.showErr('Could not load saved data: ' + e.message); }
+  loadSettingsInputs();
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+  try { render(); } catch (e) { window.showErr('Display problem: ' + e.message); }
+  ready = true;
+  diag();
+})();
+</script>
+</body></html>
