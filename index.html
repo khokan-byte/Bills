@@ -1498,4 +1498,56 @@ if (CR && lkGet()) lkShow('unlock');
   paintBar();
 })();
   </script>
+  <script>
+(function () {
+  Object.assign(I18N.en, {
+    rv_title: 'Find units from a bill amount',
+    rv_hint: 'Type the bill total and the app works backwards to the units. Meter rent comes from Bill settings.',
+    rv_month: 'Bill month (like 2026-06)', rv_load: 'Sanctioned load (kW)', rv_amt: 'Bill amount (৳)',
+    rv_out: 'About {0}', rv_chk: 'At that many units the bill comes to {0}. One unit more or less moves it by about {1}.',
+    rv_none: 'That amount is too small or too large to match any number of units.'
+  });
+  Object.assign(I18N.bn, {
+    rv_title: 'বিলের টাকা থেকে ইউনিট বের করুন',
+    rv_hint: 'বিলের মোট টাকা লিখুন, অ্যাপ উল্টো হিসাব করে ইউনিট বের করবে। মিটার ভাড়া বিলের সেটিংস থেকে আসে।',
+    rv_month: 'বিলের মাস (যেমন 2026-06)', rv_load: 'অনুমোদিত লোড (কিলোওয়াট)', rv_amt: 'বিলের টাকা (৳)',
+    rv_out: 'প্রায় {0}', rv_chk: 'এই ইউনিটে বিল হয় {0}। এক ইউনিট কম-বেশিতে বিল প্রায় {1} বদলায়।',
+    rv_none: 'এই টাকা এত কম বা বেশি যে কোনো ইউনিটের সাথে মেলে না।'
+  });
+
+  var card = document.createElement('div'); card.className = 'card noprint'; card.id = 'sec-rev';
+  card.innerHTML =
+    '<h2 data-i="rv_title"></h2><small data-i="rv_hint"></small>' +
+    '<label for="rv-month" data-i="rv_month"></label><input id="rv-month" type="text" inputmode="numeric" maxlength="7" placeholder="2026-06" autocomplete="off">' +
+    '<label for="rv-load" data-i="rv_load"></label><input id="rv-load" type="text" inputmode="decimal" autocomplete="off" placeholder="2">' +
+    '<label for="rv-amt" data-i="rv_amt"></label><input id="rv-amt" type="text" inputmode="decimal" autocomplete="off">' +
+    '<div class="res" id="rv-out" style="white-space:normal;display:none"></div>';
+  var anchor = $('sec-check');
+  anchor.parentNode.insertBefore(card, anchor.nextSibling);
+  card.querySelectorAll('[data-i]').forEach(function (e) { e.textContent = tr(e.dataset.i); });
+
+  function totalAt(u, tf, load) {
+    var keep = settings.load; settings.load = load;
+    try { return bill(u, tf).total; } finally { settings.load = keep; }
+  }
+  function run() {
+    var out = $('rv-out'), month = bn2en($('rv-month').value.trim()), amt = num($('rv-amt').value);
+    var load = num($('rv-load').value); if (isNaN(load)) load = settings.load;
+    var tf = tariffFor(month);
+    if (!/^\d{4}-\d{2}$/.test(month) || isNaN(amt) || !tf) { out.style.display = 'none'; return; }
+    var lo2 = 0, hi = 20000;
+    if (totalAt(lo2, tf, load) > amt || totalAt(hi, tf, load) < amt) {
+      out.style.display = 'block'; out.textContent = tr('rv_none'); return;
+    }
+    for (var i = 0; i < 60; i++) { var mid = (lo2 + hi) / 2; if (totalAt(mid, tf, load) < amt) lo2 = mid; else hi = mid; }
+    var u = (lo2 + hi) / 2;
+    var step = totalAt(u + 1, tf, load) - totalAt(u, tf, load);
+    out.innerHTML = '<b style="font-size:20px">' + tr('rv_out', fmt(u) + ' ' + UN()) + '</b><small style="margin-top:6px">' + tr('rv_chk', tk(totalAt(u, tf, load)), tk(step)) + '</small>';
+    out.style.display = 'block';
+  }
+  card.addEventListener('input', run);
+  var prev = applyLang;
+  applyLang = function (l) { prev(l); run(); };
+})();
+  </script>
 </body></html>
