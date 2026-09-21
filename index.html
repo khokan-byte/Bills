@@ -1550,4 +1550,11 @@ if (CR && lkGet()) lkShow('unlock');
   applyLang = function (l) { prev(l); run(); };
 })();
   </script>
+  <script>
+(function () {
+  function tick() { try { dash(); } catch (e) {} }
+  setInterval(tick, 60000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(); });
+})();
+  </script>
 </body></html>
