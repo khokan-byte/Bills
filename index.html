@@ -1900,4 +1900,201 @@ if (CR && lkGet()) lkShow('unlock');
   }
 })();
 </script>
+  <script>
+(function () {
+  Object.assign(I18N.en, {
+    n_dev: 'Devices',
+    dv_title: 'Devices and total consumption',
+    dv_hint: 'List the devices you use. The app estimates the units they use and compares that with your meters.',
+    dv_month: 'Units per month', dv_bill: 'Estimated bill', dv_day: 'Units per day', dv_load: 'Connected load',
+    dv_add: 'Add a device', dv_preset: 'Choose a common device', dv_custom: 'Custom device', dv_name: 'Name',
+    dv_w: 'Watts (W)', dv_qty: 'How many', dv_h: 'Hours per day', dv_duty: 'Duty (%)',
+    dv_dhint: 'Fridges and ACs run only part of the time: use about 40% for a fridge and 60% for an AC. Use 100% for lights, fans and cameras.',
+    dv_addbtn: 'Add device', dv_err: 'Enter a name and the watts.', dv_added: 'Device added',
+    dg_light: 'Lights', dg_fan: 'Fans', dg_cool: 'Cooling', dg_kit: 'Kitchen', dg_home: 'Laundry and water', dg_elec: 'Electronics', dg_sec: 'Cameras and security',
+    dv_empty: 'No devices yet.', dv_example: 'Try an example list',
+    dv_dayu: '{0} unit/day', dv_mon: '{0} unit/month', dv_share: '{0} of total', dv_remove: 'Remove',
+    dv_w2: 'Watts', dv_q2: 'Qty', dv_h2: 'Hours/day', dv_d2: 'Duty %',
+    dv_cmp_none: 'Pick two different readings under Compare to see how your devices match your meters.',
+    dv_cmp_head: 'Devices vs your meters (per day)',
+    dv_cmp_sub: 'Your devices estimate {0} against the sub-meter {1}: {2}',
+    dv_cmp_ok: 'Your devices explain the sub-meter reading well (within about ±20%).',
+    dv_cmp_hi: 'Your devices add up to more than the sub-meter recorded. Hours may be too high, or some devices run less than listed.',
+    dv_cmp_lo: 'The sub-meter recorded more than your devices add up to. Check for unlisted devices, longer hours or a sub-meter problem.',
+    dv_cmp_main: 'The main meter recorded {0}, which is {1} more than your devices add up to.',
+    dv_cmp_note: 'Rough estimates based on typical watts. Use the watts printed on each device for better accuracy.',
+    dv_help_t: "Don't know the watts?",
+    dv_help_b: 'Look on a sticker on the device itself, on its plug or charger, or on the box or manual, usually printed as "W" (watts). If nothing is found, pick the closest device from the list above and keep its typical value.\nIf the sticker shows Amps (A) instead of Watts, use the box below: for Bangladesh mains (220V), multiply Amps by 220 to get Watts.',
+    dv_amp_label: 'Amps shown on the sticker (A)', dv_amp_out: '= about {0} W. Use this in the Watts box above.'
+  });
+  Object.assign(I18N.bn, {
+    n_dev: 'যন্ত্র',
+    dv_title: 'যন্ত্র ও মোট ব্যবহার',
+    dv_hint: 'আপনি যেসব যন্ত্র ব্যবহার করেন সেগুলো লিখুন। অ্যাপ সেগুলোর আনুমানিক ইউনিট হিসাব করে আপনার মিটারের সাথে মিলিয়ে দেখাবে।',
+    dv_month: 'মাসে ইউনিট', dv_bill: 'আনুমানিক বিল', dv_day: 'দিনে ইউনিট', dv_load: 'মোট সংযুক্ত লোড',
+    dv_add: 'যন্ত্র যোগ করুন', dv_preset: 'পরিচিত যন্ত্র বেছে নিন', dv_custom: 'নিজের যন্ত্র', dv_name: 'নাম',
+    dv_w: 'ওয়াট (W)', dv_qty: 'কয়টি', dv_h: 'দিনে কত ঘণ্টা', dv_duty: 'চালু থাকার হার (%)',
+    dv_dhint: 'ফ্রিজ ও এসি সবসময় পুরো লোডে চলে না, তাই ফ্রিজে প্রায় ৪০% ও এসিতে প্রায় ৬০% দিন। লাইট, ফ্যান ও ক্যামেরায় ১০০% দিন।',
+    dv_addbtn: 'যন্ত্র যোগ করুন', dv_err: 'নাম ও ওয়াট লিখুন।', dv_added: 'যন্ত্র যোগ হয়েছে',
+    dg_light: 'লাইট', dg_fan: 'ফ্যান', dg_cool: 'ঠান্ডা করার যন্ত্র', dg_kit: 'রান্নাঘর', dg_home: 'ধোয়া ও পানি', dg_elec: 'ইলেকট্রনিক্স', dg_sec: 'ক্যামেরা ও নিরাপত্তা',
+    dv_empty: 'এখনো কোনো যন্ত্র নেই।', dv_example: 'একটি উদাহরণ তালিকা দেখুন',
+    dv_dayu: 'দিনে {0} ইউনিট', dv_mon: 'মাসে {0} ইউনিট', dv_share: 'মোটের {0}', dv_remove: 'সরান',
+    dv_w2: 'ওয়াট', dv_q2: 'সংখ্যা', dv_h2: 'ঘণ্টা/দিন', dv_d2: 'চালু %',
+    dv_cmp_none: 'যন্ত্রগুলো মিটারের সাথে কতটা মেলে তা দেখতে "তুলনা" অংশে দুটি আলাদা রিডিং বেছে নিন।',
+    dv_cmp_head: 'যন্ত্র বনাম আপনার মিটার (প্রতিদিন)',
+    dv_cmp_sub: 'আপনার যন্ত্রের আনুমানিক {0}, সাব-মিটারে {1}: {2}',
+    dv_cmp_ok: 'আপনার যন্ত্রগুলো সাব-মিটারের রিডিং ভালোভাবে ব্যাখ্যা করে (প্রায় ±২০%-এর মধ্যে)।',
+    dv_cmp_hi: 'আপনার যন্ত্রের হিসাব সাব-মিটারে ওঠা ইউনিটের চেয়ে বেশি। ঘণ্টা বেশি ধরা হয়ে থাকতে পারে, অথবা কিছু যন্ত্র কম চলে।',
+    dv_cmp_lo: 'সাব-মিটারে আপনার যন্ত্রের যোগফলের চেয়ে বেশি উঠেছে। তালিকায় নেই এমন যন্ত্র, বেশি ঘণ্টা বা সাব-মিটারের সমস্যা দেখুন।',
+    dv_cmp_main: 'মূল মিটারে উঠেছে {0}, যা আপনার যন্ত্রের যোগফলের চেয়ে {1} বেশি।',
+    dv_cmp_note: 'এটি মোটামুটি হিসাব, সাধারণ ওয়াটের ওপর ভিত্তি করে। আরও নির্ভুল করতে প্রতিটি যন্ত্রে ছাপানো ওয়াট ব্যবহার করুন।',
+    dv_help_t: 'ওয়াট জানেন না?',
+    dv_help_b: 'যন্ত্রের গায়ে, প্লাগ বা চার্জারে, অথবা বাক্স বা ম্যানুয়ালে একটি স্টিকারে দেখুন, সাধারণত "W" (ওয়াট) লেখা থাকে। কিছু না পেলে ওপরের তালিকা থেকে কাছাকাছি যন্ত্রটি বেছে নিয়ে তার সাধারণ মান রাখুন।\nস্টিকারে ওয়াটের বদলে অ্যাম্পিয়ার (A) লেখা থাকলে নিচের বক্স ব্যবহার করুন: বাংলাদেশের লাইনে (২২০ ভোল্ট) অ্যাম্পিয়ারকে ২২০ দিয়ে গুণ করলে ওয়াট পাওয়া যায়।',
+    dv_amp_label: 'স্টিকারে যে অ্যাম্পিয়ার (A) লেখা আছে', dv_amp_out: '= প্রায় {0} ওয়াট। এটি ওপরের ওয়াট বক্সে ব্যবহার করুন।'
+  });
+
+  var IC = {
+    bulb: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 00-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0012 3z"/>',
+    tube: '<rect x="3" y="9" width="18" height="6" rx="3"/><path d="M7 12h10"/>',
+    panel: '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M4 15h16M9 4v16"/>',
+    fan: '<ellipse cx="12" cy="6.2" rx="2.4" ry="3.8"/><ellipse cx="12" cy="6.2" rx="2.4" ry="3.8" transform="rotate(120 12 12)"/><ellipse cx="12" cy="6.2" rx="2.4" ry="3.8" transform="rotate(240 12 12)"/><circle cx="12" cy="12" r="1.3"/>',
+    ac: '<rect x="3" y="5" width="18" height="8" rx="2"/><path d="M7 16v2M12 16v3M17 16v2M7 9h10"/>',
+    fridge: '<rect x="6" y="3" width="12" height="18" rx="2"/><path d="M6 10h12M9 6v2M9 13v3"/>',
+    freezer: '<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M3 12h18M9 8V6h6v2"/>',
+    pot: '<path d="M4 11h16v6a3 3 0 01-3 3H7a3 3 0 01-3-3z"/><path d="M8 11V9a4 4 0 018 0v2M2 11h2M20 11h2"/>',
+    kettle: '<path d="M6 9h10l1 10a1 1 0 01-1 1H7a1 1 0 01-1-1z"/><path d="M16 11h2a2 2 0 010 4h-1M10 6l1-2h2l1 2"/>',
+    micro: '<rect x="3" y="6" width="18" height="12" rx="2"/><rect x="6" y="9" width="8" height="6" rx="1"/><path d="M17 9h.01M17 12h.01M17 15h.01"/>',
+    blend: '<path d="M8 4h8l-1 10a3 3 0 01-3 3 3 3 0 01-3-3z"/><path d="M9 20h6M12 17v3"/>',
+    flame: '<path d="M12 3c1 3 5 5 5 9a5 5 0 01-10 0c0-2 1-3 2-4 .5 1 1 1.5 2 1.5 0-3 0-5 1-6.5z"/>',
+    wash: '<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M7 6.5h2"/>',
+    iron: '<path d="M3 17h17c1 0 1.5-.5 1.5-1.5C21.5 11 18 8 13 8H7c-2 0-4 2-4 4z"/><path d="M8 12h6"/>',
+    drop: '<path d="M12 3s6 6.5 6 11a6 6 0 01-12 0c0-4.5 6-11 6-11z"/>',
+    therm: '<path d="M10 14V5a2 2 0 014 0v9a4 4 0 11-4 0z"/>',
+    tv: '<rect x="3" y="7" width="18" height="12" rx="2"/><path d="M8 3l4 4 4-4"/>',
+    monitor: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+    laptop: '<rect x="5" y="5" width="14" height="10" rx="1.5"/><path d="M3 19h18"/>',
+    wifi: '<path d="M4.5 9.5a11 11 0 0115 0M7.5 12.5a7 7 0 019 0M10.5 15.5a3 3 0 013 0"/><path d="M12 19h.01"/>',
+    phone: '<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/>',
+    box: '<rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 13h4M17 13h.01"/>',
+    wind: '<path d="M3 8h9a3 3 0 110 6M3 16h13a3 3 0 11-3 3"/>',
+    cam: '<path d="M3 8a2 2 0 012-2h8l2 2h4v9a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><circle cx="12" cy="13" r="3"/>',
+    dvr: '<rect x="3" y="7" width="18" height="10" rx="2"/><circle cx="7" cy="12" r="1.2"/><path d="M11 12h7"/>',
+    plug: '<path d="M9 3v5M15 3v5"/><path d="M7 8h10v3a5 5 0 01-10 0z"/><path d="M12 16v5"/>',
+    help: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.7-2.5 1.8-2.5 3.5"/><path d="M12 17h.01"/>',
+    home: '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    chart: '<path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-8"/>',
+    receipt: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    file: '<path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h6"/>',
+    db: '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>',
+    gauge: '<path d="M4 17a8 8 0 1116 0"/><path d="M12 17l4-5"/>',
+    shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+    lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',
+    check: '<path d="M5 12l5 5L20 7"/>',
+    alert: '<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5h.01"/>',
+    download: '<path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/>',
+    upload: '<path d="M12 16V5"/><path d="M7 9l5-5 5 5"/><path d="M5 20h14"/>',
+    filedown: '<path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4"/><path d="M12 11v6M9 14l3 3 3-3"/>',
+    refresh: '<path d="M20 12a8 8 0 10-2.3 5.6"/><path d="M20 5v5h-5"/>',
+    printer: '<path d="M7 9V3h10v6"/><path d="M7 17H5v-6h14v6h-2"/><rect x="7" y="14" width="10" height="7"/>',
+    share: '<circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.6M8.2 13.2l7.6 4.6"/>',
+    trash: '<path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/>',
+    search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/>'
+  };
+  function url(n) {
+    var s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + IC[n] + '</svg>';
+    return 'url("data:image/svg+xml,' + encodeURIComponent(s) + '")';
+  }
+  var css = ':root{';
+  Object.keys(IC).forEach(function (n) { css += '--ic-' + n + ':' + url(n) + ';'; });
+  css += '}';
+  Object.keys(IC).forEach(function (n) { css += '.ico[data-ic="' + n + '"]{--m:var(--ic-' + n + ')}'; });
+  function ctx(list, size, mr, va, extra) {
+    list.forEach(function (x) { css += x[0] + '{--m:var(--ic-' + x[1] + ')}'; });
+    css += list.map(function (x) { return x[0] + '::before'; }).join(',') +
+      '{content:"";display:inline-block;flex:none;width:' + size + 'px;height:' + size + 'px;margin-right:' + mr + 'px;vertical-align:' + va + 'px;background:currentColor;-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat;' + (extra || '') + '}';
+  }
+  var NAV = [['#sec-dash', 'home'], ['#sec-add', 'plus'], ['#sec-compare', 'chart'], ['#sec-devices', 'plug'], ['#sec-bills', 'receipt'], ['#sec-log', 'clock'], ['#sec-report', 'file'], ['#sec-data', 'db']]
+    .map(function (x) { return ['nav a[href="' + x[0] + '"]', x[1]]; });
+  var HEAD = [['#sec-add>h2', 'gauge'], ['#sec-compare>h2', 'chart'], ['#sec-devices>h2', 'plug'], ['#sec-bills>h2', 'receipt'], ['#sec-check>h2', 'shield'],
+    ['#sec-log>h2', 'clock'], ['#sec-report>h2', 'file'], ['#sec-import summary h2', 'download'], ['#sec-lock>h2', 'lock'], ['#sec-data>h2', 'db']];
+  var BTN = [['#save', 'check'], ['#addbill', 'plus'], ['#bc-save', 'check'], ['#commit', 'plus'], ['#parse', 'search'], ['#csv', 'filedown'], ['#backup', 'download'],
+    ['#restoreBtn', 'upload'], ['#refresh', 'refresh'], ['#install', 'phone'], ['#rprint', 'printer'], ['#rshare', 'share'], ['#lc-set', 'lock'], ['#lc-now', 'lock'],
+    ['#dv-add', 'plus'], ['#dv-sum', 'plus'], ['#dv-ex', 'plug']];
+  ctx(NAV, 14, 6, -2);
+  ctx(HEAD, 18, 8, -3, 'background:var(--ac);');
+  ctx(BTN, 16, 8, -3);
+  ctx([['button[data-id]', 'trash'], ['button[data-bid]', 'trash'], ['button[data-dvdel]', 'trash']], 13, 6, -2);
+  ctx([['.pill.ok', 'check'], ['.pill.warn', 'alert'], ['.pill.bad', 'alert']], 12, 4, -1);
+  ctx([['.blk>b', 'gauge'], ['#dv-help summary', 'help']], 15, 6, -2);
+  css += '.nm{display:flex;align-items:center;gap:10px;min-width:0}' +
+    '.ico{flex:none;width:32px;height:32px;border-radius:10px;background:var(--sf);display:inline-flex;align-items:center;justify-content:center}' +
+    '.ico::before{content:"";display:block;width:18px;height:18px;background:var(--ac);-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}' +
+    '.four{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}' +
+    '.four label{margin:0;font-size:11px}' +
+    '.four input{min-height:40px;padding:8px;font-size:15px;text-align:center;margin-top:3px}' +
+    '.rv{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--mu);margin-top:8px}' +
+    '.bar{height:6px;border-radius:999px;background:var(--sf);overflow:hidden;margin-top:6px}' +
+    '.bar i{display:block;height:100%;background:var(--ac)}' +
+    'nav a.cur{border-color:var(--ac);color:var(--ac)}' +
+    '.met b,.big,.bxr b,.bxbig,table.rt td,.pill{font-variant-numeric:tabular-nums}' +
+    '@media print{#sec-report>h2::before,#sec-report .pill::before{display:none}}';
+  var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+
+  var PRESETS = [
+    {k: 'led5', g: 'dg_light', w: 5, h: 5, d: 100, en: 'LED bulb, small (5 W) — corridor, toilet', bn: 'ছোট এলইডি বাল্ব (৫ ওয়াট) — বারান্দা, বাথরুম'},
+    {k: 'led7', g: 'dg_light', w: 7, h: 5, d: 100, en: 'LED bulb, standard (7 W) — small room', bn: 'সাধারণ এলইডি বাল্ব (৭ ওয়াট) — ছোট রুম'},
+    {k: 'led9', g: 'dg_light', w: 9, h: 5, d: 100, en: 'LED bulb (9 W) — bedroom, living room', bn: 'এলইডি বাল্ব (৯ ওয়াট) — বেডরুম, ড্রয়িংরুম'},
+    {k: 'led12', g: 'dg_light', w: 12, h: 5, d: 100, en: 'LED bulb, bright (12 W) — medium room', bn: 'উজ্জ্বল এলইডি বাল্ব (১২ ওয়াট) — মাঝারি রুম'},
+    {k: 'led15', g: 'dg_light', w: 15, h: 5, d: 100, en: 'LED bulb, very bright (15 W) — large room', bn: 'অতি উজ্জ্বল এলইডি বাল্ব (১৫ ওয়াট) — বড় রুম'},
+    {k: 'led18', g: 'dg_light', w: 18, h: 5, d: 100, en: 'LED tube light (18 W) — kitchen, hall', bn: 'এলইডি টিউব লাইট (১৮ ওয়াট) — রান্নাঘর, হল'},
+    {k: 'led20', g: 'dg_light', w: 20, h: 5, d: 100, en: 'LED tube light, bright (20 W)', bn: 'উজ্জ্বল এলইডি টিউব লাইট (২০ ওয়াট)'},
+    {k: 'panel18', g: 'dg_light', w: 18, h: 6, d: 100, en: 'LED panel / ceiling light (18 W) — shop or office', bn: 'এলইডি প্যানেল / সিলিং লাইট (১৮ ওয়াট) — দোকান বা অফিস'},
+    {k: 'cfl20', g: 'dg_light', w: 20, h: 5, d: 100, en: 'CFL energy saver (20 W)', bn: 'সিএফএল এনার্জি সেভার (২০ ওয়াট)'},
+    {k: 'inc60', g: 'dg_light', w: 60, h: 4, d: 100, en: 'Old-style bulb, not LED (60 W)', bn: 'পুরাতন ধরনের বাল্ব, এলইডি নয় (৬০ ওয়াট)'},
+    {k: 'tube40', g: 'dg_light', w: 45, h: 5, d: 100, en: 'Old fluorescent tube with choke (about 45 W)', bn: 'পুরাতন ফ্লুরোসেন্ট টিউব, চোকসহ (প্রায় ৪৫ ওয়াট)'},
+    {k: 'fan75', g: 'dg_fan', w: 75, h: 8, d: 100, en: 'Ceiling fan (75 W)', bn: 'সিলিং ফ্যান (৭৫ ওয়াট)'},
+    {k: 'bldc30', g: 'dg_fan', w: 30, h: 8, d: 100, en: 'BLDC ceiling fan, energy saving (30 W)', bn: 'বিএলডিসি সিলিং ফ্যান, বিদ্যুৎ সাশ্রয়ী (৩০ ওয়াট)'},
+    {k: 'tfan55', g: 'dg_fan', w: 55, h: 6, d: 100, en: 'Table or stand fan (55 W)', bn: 'টেবিল বা স্ট্যান্ড ফ্যান (৫৫ ওয়াট)'},
+    {k: 'exh35', g: 'dg_fan', w: 35, h: 2, d: 100, en: 'Exhaust fan (35 W)', bn: 'এক্সহস্ট ফ্যান (৩৫ ওয়াট)'},
+    {k: 'ac1', g: 'dg_cool', w: 1000, h: 6, d: 60, en: 'AC 1 ton (about 1000 W)', bn: 'এসি ১ টন (প্রায় ১০০০ ওয়াট)'},
+    {k: 'ac15', g: 'dg_cool', w: 1500, h: 6, d: 60, en: 'AC 1.5 ton (about 1500 W)', bn: 'এসি ১.৫ টন (প্রায় ১৫০০ ওয়াট)'},
+    {k: 'ac2', g: 'dg_cool', w: 2000, h: 6, d: 60, en: 'AC 2 ton (about 2000 W)', bn: 'এসি ২ টন (প্রায় ২০০০ ওয়াট)'},
+    {k: 'fridge', g: 'dg_cool', w: 150, h: 24, d: 40, en: 'Refrigerator (about 150 W)', bn: 'রেফ্রিজারেটর (প্রায় ১৫০ ওয়াট)'},
+    {k: 'freezer', g: 'dg_cool', w: 200, h: 24, d: 40, en: 'Deep freezer (about 200 W)', bn: 'ডিপ ফ্রিজার (প্রায় ২০০ ওয়াট)'},
+    {k: 'rice', g: 'dg_kit', w: 700, h: 1, d: 100, en: 'Rice cooker (700 W)', bn: 'রাইস কুকার (৭০০ ওয়াট)'},
+    {k: 'kettle', g: 'dg_kit', w: 1500, h: 0.3, d: 100, en: 'Electric kettle (1500 W)', bn: 'ইলেকট্রিক কেটলি (১৫০০ ওয়াট)'},
+    {k: 'micro', g: 'dg_kit', w: 1000, h: 0.3, d: 100, en: 'Microwave oven (1000 W)', bn: 'মাইক্রোওয়েভ ওভেন (১০০০ ওয়াট)'},
+    {k: 'blend', g: 'dg_kit', w: 400, h: 0.2, d: 100, en: 'Blender (400 W)', bn: 'ব্লেন্ডার (৪০০ ওয়াট)'},
+    {k: 'induct', g: 'dg_kit', w: 1800, h: 1, d: 100, en: 'Induction cooker (1800 W)', bn: 'ইন্ডাকশন কুকার (১৮০০ ওয়াট)'},
+    {k: 'wash', g: 'dg_home', w: 500, h: 1, d: 100, en: 'Washing machine (500 W)', bn: 'ওয়াশিং মেশিন (৫০০ ওয়াট)'},
+    {k: 'iron', g: 'dg_home', w: 1000, h: 0.5, d: 50, en: 'Clothes iron (1000 W)', bn: 'ইস্ত্রি (১০০০ ওয়াট)'},
+    {k: 'pump', g: 'dg_home', w: 560, h: 0.5, d: 100, en: 'Water pump 0.75 HP (about 560 W)', bn: 'পানির পাম্প ০.৭৫ এইচপি (প্রায় ৫৬০ ওয়াট)'},
+    {k: 'geyser', g: 'dg_home', w: 2000, h: 1, d: 50, en: 'Water heater / geyser (2000 W)', bn: 'গিজার (২০০০ ওয়াট)'},
+    {k: 'tv32', g: 'dg_elec', w: 50, h: 4, d: 100, en: 'LED TV 32 inch (50 W)', bn: 'এলইডি টিভি ৩২ ইঞ্চি (৫০ ওয়াট)'},
+    {k: 'tv43', g: 'dg_elec', w: 80, h: 4, d: 100, en: 'LED TV 43 inch (80 W)', bn: 'এলইডি টিভি ৪৩ ইঞ্চি (৮০ ওয়াট)'},
+    {k: 'pc', g: 'dg_elec', w: 200, h: 4, d: 100, en: 'Desktop computer (200 W)', bn: 'ডেস্কটপ কম্পিউটার (২০০ ওয়াট)'},
+    {k: 'lap', g: 'dg_elec', w: 60, h: 4, d: 100, en: 'Laptop (60 W)', bn: 'ল্যাপটপ (৬০ ওয়াট)'},
+    {k: 'router', g: 'dg_elec', w: 10, h: 24, d: 100, en: 'Wi-Fi router (10 W)', bn: 'ওয়াইফাই রাউটার (১০ ওয়াট)'},
+    {k: 'charger', g: 'dg_elec', w: 10, h: 3, d: 100, en: 'Phone charger (10 W)', bn: 'মোবাইল চার্জার (১০ ওয়াট)'},
+    {k: 'stb', g: 'dg_elec', w: 15, h: 4, d: 100, en: 'Set-top box (15 W)', bn: 'সেট-টপ বক্স (১৫ ওয়াট)'},
+    {k: 'hair', g: 'dg_elec', w: 1200, h: 0.1, d: 100, en: 'Hair dryer (1200 W)', bn: 'হেয়ার ড্রায়ার (১২০০ ওয়াট)'},
+    {k: 'dvr4', g: 'dg_sec', w: 10, h: 24, d: 100, en: '4-channel DVR, no hard disk (about 10 W)', bn: '৪-চ্যানেল ডিভিআর, হার্ড ডিস্ক ছাড়া (প্রায় ১০ ওয়াট)'},
+    {k: 'dvr4hdd', g: 'dg_sec', w: 15, h: 24, d: 100, en: '4-channel DVR with 1 hard disk (about 15 W)', bn: '৪-চ্যানেল ডিভিআর, ১টি হার্ড ডিস্কসহ (প্রায় ১৫ ওয়াট)'},
+    {k: 'nvr4', g: 'dg_sec', w: 10, h: 24, d: 100, en: '4-channel NVR (IP camera recorder, about 10 W)', bn: '৪-চ্যানেল এনভিআর (আইপি ক্যামেরা রেকর্ডার, প্রায় ১০ ওয়াট)'},
+    {k: 'cam', g: 'dg_sec', w: 5, h: 24, d: 100, en: 'CCTV camera, each (about 5 W)', bn: 'সিসিটিভি ক্যামেরা, প্রতিটি (প্রায় ৫ ওয়াট)'}
+  ];
+  var GROUPS = ['dg_light', 'dg_fan', 'dg_cool', 'dg_kit', 'dg_home', 'dg_elec', 'dg_sec'];
+  var ICON = {led5: 'bulb', led7: 'bulb', led9: 'bulb', led12: 'bulb', led15: 'bulb', led18: 'tube', led20: 'tube', panel18: 'panel',
+    cfl20: 'bulb', inc60: 'bulb', tube40: 'tube', fan75: 'fan', bldc30: 'fan', tfan55: 'fan', exh35: 'fan',
+    ac1: 'ac', ac15: 'ac', ac2: 'ac', fridge: 'fridge', freezer: 'freezer', rice: 'pot', kettle: 'kettle', micro: 'micro', blend: 'blend',
+    induct: 'flame', wash: 'wash', iron: 'iron', pump: 'drop', geyser: 'therm', tv32: 'tv', tv43: 'tv', pc: 'monitor', lap: 'laptop',
+    router: 'wifi', charger: 'phone', stb: 'box', hair: 'wind', dvr4: 'dvr', dvr4hdd: 'dvr', nvr4: 'dvr', cam: 'cam'};
+  var EXAMPLE = [['led9', null, 9, 4, 5, 100], ['fan75', null, 75, 3, 8, 100], ['fridge', null, 150, 1, 24, 40], ['tv43', null, 80, 1, 4, 100],
+    ['router', null, 10, 1, 24, 100], ['ac15', null, 1500, 1, 5, 60], ['pump', null, 560, 1, 0.5, 100], ['charger', null, 10, 2, 3, 100], ['iron', null, 1000, 1, 0.3, 50]];
+  function pFind(k) { return PRESETS.find(function (p) { return p.k === k; }); }
+  function devs() { if (!Array.isArray(settings.devices)) settings.devices = []; return settings.devices; }
+  function nameOf(it) { return it.name || (pFind(it.k) ? pFind(it.k)[lang] : ''); }
+  function perDay(it) { return it.w * it.q * it.h * (it.d / 
 </body></html>
