@@ -1651,4 +1651,99 @@ if (CR && lkGet()) lkShow('unlock');
   texts(); fill(); paint();
 })();
 </script>
+  <script>
+(function () {
+  if (!$('dv-cmp')) return;
+  Object.assign(I18N.en, {
+    ips_title: 'IPS / inverter (battery backup)',
+    ips_hint: 'List your devices as usual, counting every hour they run, including hours the IPS powers them. This adds only what the IPS itself uses: its idle draw and the loss from charging the battery.',
+    ips_on: 'Include the IPS in my totals', ips_no: 'No', ips_yes: 'Yes',
+    ips_va: 'IPS rating (VA)', ips_idle: 'Idle draw (W)', ips_load: 'Load on the IPS during outages (W)',
+    ips_out: 'Backup hours per day', ips_eff: 'Battery and inverter efficiency (%)',
+    ips_n1: 'IPS standby (idle draw)', ips_n2: 'IPS charging loss',
+    ips_res: 'The IPS adds about {0} unit/day: idle {1} + charging loss {2} (about {3} unit/month).',
+    ips_over: 'The load on the IPS is more than a {0} VA IPS can comfortably carry (about {1} W). Reduce the load or check the rating.',
+    ips_note: 'Typical values: idle 20 to 60 W, efficiency 70 to 80%. A plug-in watt meter on the IPS input shows the real idle draw.'
+  });
+  Object.assign(I18N.bn, {
+    ips_title: 'আইপিএস / ইনভার্টার (ব্যাটারি ব্যাকআপ)',
+    ips_hint: 'আপনার যন্ত্রগুলো আগের মতোই লিখুন, আইপিএসে চলার ঘণ্টাসহ সব ঘণ্টা ধরে। এখানে শুধু আইপিএস নিজে যা খায় তা যোগ হবে: বসে থাকা অবস্থার খরচ ও ব্যাটারি চার্জের ক্ষতি।',
+    ips_on: 'আমার হিসাবে আইপিএস ধরুন', ips_no: 'না', ips_yes: 'হ্যাঁ',
+    ips_va: 'আইপিএসের রেটিং (ভিএ)', ips_idle: 'বসে থাকা অবস্থায় খরচ (ওয়াট)', ips_load: 'লোডশেডিংয়ে আইপিএসে লোড (ওয়াট)',
+    ips_out: 'দিনে ব্যাকআপে কত ঘণ্টা', ips_eff: 'ব্যাটারি ও ইনভার্টারের দক্ষতা (%)',
+    ips_n1: 'আইপিএস বসে থাকা অবস্থার খরচ', ips_n2: 'আইপিএস চার্জের ক্ষতি',
+    ips_res: 'আইপিএস দিনে প্রায় {0} ইউনিট যোগ করে: বসে থাকা {1} + চার্জের ক্ষতি {2} (মাসে প্রায় {3} ইউনিট)।',
+    ips_over: 'আইপিএসে যে লোড দেওয়া হয়েছে তা {0} ভিএ আইপিএসের স্বাচ্ছন্দ্যে বহনযোগ্য সীমার (প্রায় {1} ওয়াট) বেশি। লোড কমান বা রেটিং দেখুন।',
+    ips_note: 'সাধারণ মান: বসে থাকা অবস্থায় ২০ থেকে ৬০ ওয়াট, দক্ষতা ৭০ থেকে ৮০%। আইপিএসের ইনপুটে ওয়াট মিটার লাগালে আসল খরচ জানা যায়।'
+  });
+
+  var D = {on: '0', va: 1000, idle: 30, load: 300, out: 2, eff: 75};
+  function cfg() {
+    if (!settings.ips) settings.ips = {};
+    Object.keys(D).forEach(function (k) { if (settings.ips[k] === undefined) settings.ips[k] = D[k]; });
+    return settings.ips;
+  }
+  function field(id, key) { return '<div><label for="ips-' + id + '" data-i="' + key + '"></label><input id="ips-' + id + '" type="text" inputmode="decimal" autocomplete="off"></div>'; }
+
+  var det = document.createElement('details'); det.id = 'ips-det'; det.className = 'noprint';
+  det.innerHTML =
+    '<summary data-i="ips_title"></summary><small data-i="ips_hint"></small>' +
+    '<label for="ips-on" data-i="ips_on"></label><select id="ips-on"><option value="0"></option><option value="1"></option></select>' +
+    '<div class="two">' + field('va', 'ips_va') + field('idle', 'ips_idle') + field('load', 'ips_load') + field('out', 'ips_out') + '</div>' +
+    '<div style="margin-top:0">' + field('eff', 'ips_eff') + '</div>' +
+    '<div class="res" id="ips-res" style="display:none;white-space:normal"></div>' +
+    '<small style="margin-top:8px" data-i="ips_note"></small>';
+  var anchor = $('dv-cmp');
+  anchor.parentNode.insertBefore(det, anchor);
+
+  function texts() {
+    det.querySelectorAll('[data-i]').forEach(function (e) { e.textContent = tr(e.dataset.i); });
+    var s = $('ips-on'); s.options[0].textContent = tr('ips_no'); s.options[1].textContent = tr('ips_yes');
+  }
+  function fill() {
+    var c = cfg();
+    $('ips-on').value = c.on;
+    ['va', 'idle', 'load', 'out', 'eff'].forEach(function (k) { $('ips-' + k).value = c[k]; });
+  }
+  function read() {
+    var c = cfg(); c.on = $('ips-on').value;
+    ['va', 'idle', 'load', 'out', 'eff'].forEach(function (k) { var v = num($('ips-' + k).value); c[k] = isNaN(v) || v < 0 ? 0 : v; });
+  }
+  function calc() {
+    var c = cfg(), eff = Math.min(100, Math.max(30, c.eff)) / 100;
+    var idle = c.idle * 24 / 1000, lossWh = c.load * c.out * (1 / eff - 1), loss = lossWh / 1000;
+    return {idle: idle, loss: loss, lossWh: lossWh, total: idle + loss};
+  }
+  function paint() {
+    var c = cfg(), r = $('ips-res');
+    if (c.on !== '1') { r.style.display = 'none'; return; }
+    var x = calc(), usable = c.va * 0.7;
+    var h = tr('ips_res', fmt2(x.total), fmt2(x.idle), fmt2(x.loss), fmt(x.total * 30));
+    if (c.load > usable && c.va > 0) h += '<br>' + tr('ips_over', fmt(c.va), fmt(usable));
+    r.innerHTML = h; r.style.display = 'block';
+  }
+  function sync() {
+    var c = cfg();
+    if (!Array.isArray(settings.devices)) settings.devices = [];
+    settings.devices = settings.devices.filter(function (d) { return !d.ips; });
+    if (c.on === '1') {
+      var x = calc();
+      settings.devices.push({k: null, name: tr('ips_n1'), w: c.idle, q: 1, h: 24, d: 100, ips: 1});
+      if (x.lossWh > 0) settings.devices.push({k: null, name: tr('ips_n2'), w: Math.round(x.lossWh * 10) / 10, q: 1, h: 1, d: 100, ips: 1});
+    }
+    persistSettings(); render();
+  }
+  var timer = null;
+  det.addEventListener('input', function () { read(); paint(); clearTimeout(timer); timer = setTimeout(sync, 400); });
+  $('ips-on').addEventListener('change', function () { read(); paint(); clearTimeout(timer); sync(); });
+
+  var oldLoad = loadSettingsInputs;
+  loadSettingsInputs = function () { oldLoad(); fill(); paint(); };
+  var oldApply = applyLang;
+  applyLang = function (l) { oldApply(l); texts(); paint(); if (cfg().on === '1') sync(); };
+
+  texts(); fill(); paint();
+})();
+</script>
+</body></html>
 </body></html>
