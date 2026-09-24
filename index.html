@@ -1968,55 +1968,7 @@ if (CR && lkGet()) lkShow('unlock');
     return settings.ips;
   }
   function field(id, key) { return '<div><label for="ips-' + id + '" data-i="' + key + '"></label><input id="ips-' + id + '" type="text" inputmode="decimal" autocomplete="off"></div>'; }
-<script>
-(function () {
-  async function compressImage(file, maxDim, quality) {
-    try {
-      const bmp = await createImageBitmap(file);
-      let w = bmp.width, h = bmp.height;
-      const scale = Math.min(1, maxDim / Math.max(w, h));
-      w = Math.round(w * scale); h = Math.round(h * scale);
-      const c = document.createElement('canvas'); c.width = w; c.height = h;
-      c.getContext('2d').drawImage(bmp, 0, 0, w, h);
-      const blob = await new Promise(res => c.toBlob(res, 'image/jpeg', quality));
-      if (!blob) return file;
-      return new File([blob], (file.name || 'photo').replace(/\.\w+$/, '') + '.jpg', {
-        type: 'image/jpeg', lastModified: file.lastModified || Date.now()
-      });
-    } catch (e) { return file; }
-  }
 
-  function wrapWithCompression(id) {
-    const el = $(id); if (!el) return;
-    const old = el.onchange;
-    if (!old) return;
-    el.onchange = async e => {
-      const f = e.target.files && e.target.files[0];
-      if (f) {
-        const cf = await compressImage(f, 1400, 0.7);
-        const dt = new DataTransfer(); dt.items.add(cf);
-        el.files = dt.files;
-      }
-      return old.call(el, e);
-    };
-  }
-  function compressOnSelect(id) {
-    const el = $(id); if (!el) return;
-    el.addEventListener('change', async e => {
-      const f = e.target.files && e.target.files[0];
-      if (!f) return;
-      const cf = await compressImage(f, 1400, 0.7);
-      const dt = new DataTransfer(); dt.items.add(cf);
-      el.files = dt.files;
-    });
-  }
-
-  wrapWithCompression('p-main');
-  wrapWithCompression('p-sub');
-  compressOnSelect('b-photo');
-  compressOnSelect('bc-photo');
-})();
-</script>
   var det = document.createElement('details'); det.id = 'ips-det'; det.className = 'noprint';
   det.innerHTML =
     '<summary data-i="ips_title"></summary><small data-i="ips_hint"></small>' +
