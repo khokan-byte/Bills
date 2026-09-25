@@ -23,6 +23,7 @@ try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dar
 </script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{color-scheme:light;--bg:#f5f5f3;--card:#fff;--bd:#e2e2de;--tx:#1a1a1a;--mu:#6b6b66;--in:#fff;--btn:#1a1a1a;--btnt:#fff;--sf:#f1f1ee;--err:#b00020;--ac:#378ADD;--ok:#0f7b5a;--warn:#9a5b00;--bad:#b3261e;--okb:#e3f4ed;--warnb:#fdf0dc;--badb:#fbe7e5}
   :root[data-theme=dark]{color-scheme:dark;--bg:#111113;--card:#1b1b1e;--bd:#2c2c31;--tx:#ececee;--mu:#9d9da3;--in:#232327;--btn:#ececee;--btnt:#111113;--sf:#232327;--err:#ff8a80;--ac:#6cb0f5;--ok:#5fd1a4;--warn:#f0b35a;--bad:#ff8f86;--okb:#12352a;--warnb:#3a2a10;--badb:#3d1917}
@@ -2076,6 +2077,113 @@ if (CR && lkGet()) lkShow('unlock');
   wrapWithCompression('p-sub');
   compressOnSelect('b-photo');
   compressOnSelect('bc-photo');
+})();
+</script>
+<script>
+(function () {
+  const SUPABASE_URL = 'https://tqqlstdonbgsvatqpryd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcWxzdGRvbmJnc3ZhdHFwcnlkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDMwOTUwNSwiZXhwIjoyMTA1ODg1NTA1fQ.1eX_tfPtvpeGFlaQGtt9MsXE_PPy2-BxnuH9oU_g7-c';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  Object.assign(I18N.en, {
+    cl_title: 'Cloud sharing', cl_hint: 'Sign in to sync your readings, or to view someone else\'s shared readings.',
+    cl_email: 'Email address', cl_send: 'Send me a sign-in link', cl_sent: 'Check your email for the sign-in link.',
+    cl_as: 'Signed in as {0} ({1})', cl_editor: 'editor', cl_viewer: 'viewer, read-only',
+    cl_out: 'Sign out', cl_viewnote: 'You are viewing shared data. Only the owner can add or change readings.',
+    cl_err: 'Enter a valid email address.'
+  });
+  Object.assign(I18N.bn, {
+    cl_title: 'ক্লাউড শেয়ারিং', cl_hint: 'রিডিং সিঙ্ক করতে, অথবা অন্য কারও শেয়ার করা রিডিং দেখতে সাইন ইন করুন।',
+    cl_email: 'ইমেইল ঠিকানা', cl_send: 'সাইন-ইন লিংক পাঠান', cl_sent: 'সাইন-ইন লিংকের জন্য ইমেইল দেখুন।',
+    cl_as: '{0} হিসেবে সাইন ইন করা আছে ({1})', cl_editor: 'এডিটর', cl_viewer: 'ভিউয়ার, শুধু দেখা যাবে',
+    cl_out: 'সাইন আউট', cl_viewnote: 'আপনি শেয়ার করা ডেটা দেখছেন। শুধু মালিক রিডিং যোগ বা পরিবর্তন করতে পারবেন।',
+    cl_err: 'সঠিক ইমেইল ঠিকানা দিন।'
+  });
+
+  const card = document.createElement('div'); card.className = 'card noprint'; card.id = 'sec-cloud';
+  card.innerHTML =
+    '<h2 data-i="cl_title"></h2><small data-i="cl_hint"></small>' +
+    '<div id="cl-form"><label for="cl-email" data-i="cl_email"></label><input id="cl-email" type="email" autocomplete="off">' +
+    '<p class="err" id="cl-err"></p><button id="cl-send" data-i="cl_send"></button></div>' +
+    '<div id="cl-signed" style="display:none"><p class="muted" id="cl-who"></p><button class="alt" id="cl-out" data-i="cl_out"></button>' +
+    '<p class="res" id="cl-vnote" style="display:none"></p></div>';
+  const dataCard = $('sec-data');
+  dataCard.parentNode.insertBefore(card, dataCard);
+  function texts() { card.querySelectorAll('[data-i]').forEach(e => { e.textContent = tr(e.dataset.i); }); }
+
+  let isEditor = false, chan = null;
+
+  $('cl-send').onclick = async () => {
+    const email = $('cl-email').value.trim();
+    if (!/^[^@]+@[^@]+\.[^@]+$/.test(email)) { $('cl-err').textContent = tr('cl_err'); return; }
+    $('cl-err').textContent = '';
+    await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: location.href.split('#')[0] } });
+    toast(tr('cl_sent'));
+  };
+  $('cl-out').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+
+  function lockUI(locked) {
+    ['sec-add', 'sec-check'].forEach(id => { const el = $(id); if (el) el.style.display = locked ? 'none' : ''; });
+    ['sec-import'].forEach(id => { const el = $(id); if (el) el.style.display = locked ? 'none' : ''; });
+    const addbill = $('addbill'); if (addbill) addbill.closest('.noprint') && (addbill.style.display = locked ? 'none' : '');
+    $('cl-vnote').style.display = locked ? 'block' : 'none';
+    document.querySelectorAll('button[data-id],button[data-bid],#backup,#restoreBtn').forEach(b => { b.style.display = locked ? 'none' : ''; });
+  }
+
+  async function loadFromCloud() {
+    const { data: rdata } = await sb.from('readings').select('*').order('ts', { ascending: true });
+    const { data: bdata } = await sb.from('bills').select('*').order('month', { ascending: true });
+    checks = (rdata || []).map(r => ({
+      id: r.id, ts: new Date(r.ts).getTime(), note: r.note || '',
+      main: { kwh: +r.main_kwh, photo: null, hash: null, photoTime: null },
+      sub: { kwh: +r.sub_kwh, photo: null, hash: null, photoTime: null }
+    }));
+    bills = (bdata || []).map(b => ({ id: b.id, month: b.month, units: +b.units, amount: b.amount == null ? null : +b.amount, photo: null }));
+    render();
+  }
+
+  async function pushToCloud() {
+    if (!isEditor) return;
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) return;
+    await sb.from('readings').delete().eq('created_by', user.id);
+    await sb.from('bills').delete().eq('created_by', user.id);
+    if (checks.length) await sb.from('readings').insert(checks.map(c => ({
+      ts: new Date(c.ts).toISOString(), main_kwh: c.main.kwh, sub_kwh: c.sub.kwh, note: c.note || '', created_by: user.id
+    })));
+    if (bills.length) await sb.from('bills').insert(bills.map(b => ({
+      month: b.month, units: b.units, amount: b.amount, created_by: user.id
+    })));
+  }
+
+  async function afterSignIn() {
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) return;
+    $('cl-form').style.display = 'none'; $('cl-signed').style.display = 'block';
+    const { data: ed } = await sb.from('editors').select('user_id').eq('user_id', user.id).maybeSingle();
+    isEditor = !!ed;
+    $('cl-who').textContent = tr('cl_as', user.email, isEditor ? tr('cl_editor') : tr('cl_viewer'));
+    lockUI(!isEditor);
+    if (!isEditor) {
+      await loadFromCloud();
+      if (chan) sb.removeChannel(chan);
+      chan = sb.channel('rt-' + user.id)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'readings' }, loadFromCloud)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'bills' }, loadFromCloud)
+        .subscribe();
+    } else {
+      const oldPersist = persist, oldPersistBills = persistBills;
+      persist = async (...a) => { const r = await oldPersist(...a); pushToCloud(); return r; };
+      persistBills = async (...a) => { const r = await oldPersistBills(...a); pushToCloud(); return r; };
+    }
+  }
+
+  sb.auth.onAuthStateChange((_event, session) => { if (session) afterSignIn(); });
+  (async () => { const { data: { session } } = await sb.auth.getSession(); if (session) afterSignIn(); })();
+
+  const oldApply = applyLang;
+  applyLang = l => { oldApply(l); texts(); };
+  texts();
 })();
 </script>
 </body></html>
